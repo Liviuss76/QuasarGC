@@ -1,9 +1,10 @@
 QuasarGC
 ========
 
-Game Center Java Server
+Quasar Game Center  - Restfull Java Web Application  
 Standalone build setup of a spring boot application with embedded Tomcat 7 with thymeleaf frontend and postgresql backend in a self hosting .jar file built by maven.
 
+###### Technologies
 * Spring Boot 
 * Spring Security
 * Spring MVC
@@ -13,6 +14,11 @@ Standalone build setup of a spring boot application with embedded Tomcat 7 with 
 * Thymeleaf
 * Bootstrap
 * PostgresSQL 9.3
+
+###### Features
+* Leaderboards
+* Achievements
+* Players
 
 ###### Build with Maven
 
