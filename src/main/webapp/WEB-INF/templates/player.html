@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+<meta charset="UTF-8" />
+<!-- Bootstrap -->
+<link type="text/css" rel="stylesheet" href="../../resources/css/bootstrap.min.css"
+	th:href="@{/resources/css/bootstrap.min.css}" />
+<link type="text/css" rel="stylesheet" href="../../resources/css/dashboard.css"
+	th:href="@{/resources/css/dashboard.css}" />
+<link type="text/css" rel="stylesheet" href="../../resources/css/datepicker.css"
+	th:href="@{/resources/css/datepicker.css}" />
+<title>Quasar GC Admin Pannel</title>
+</head>
+<body>
+	<div id="wrap">
+		<div th:include="header :: header" class="navbar navbar-inverse navbar-fixed-top" role="navigation"></div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-10 col-md-10 col-md-offset-2" style="padding: 0; height: 20px;">
+					<ol class="breadcrumb">
+						<li><a href="/players">Players</a></li>
+						<li>Player Editor</li>
+					</ol>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar">
+					<ul class="nav nav-sidebar">
+						<li><img class="img-thumbnail" th:src="@{'data:image/png;base64,'+${playerForm.playerPicture}}"
+							style="width: 48px; height: 48px; margin-left: 20px; margin-bottom: 5px;" /></li>
+						<li class="active"><a href="#">General Info</a></li>
+						<li th:if="${editMode}"><a href="/players/playerleaderboards">Leaderboards&nbsp;<span class="badge"
+									th:text="${playerForm.leaderboardsCount}">42</span></a></li>
+						<li th:if="${editMode}"><a href="/players/playerachievements">Achievements&nbsp;<span class="badge"
+									th:text="${playerForm.achievementsCount}">42</span></a></li>
+						<li th:if="${editMode}"><a href="/players/playerlogs">Logs&nbsp;<span class="badge"
+									th:text="${playerForm.logsCount}">42</span></a></li>
+					</ul>
+				</div>
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+					<h2 class="page-header">Player Editor</h2>
+					<div class="alert alert-danger" role="alert" th:if="${param.error}">
+						<strong>Error!</strong>
+						<span th:text="${param.error[0]}">An unexpected error occurs</span>
+					</div>
+					<div class="alert alert-success" role="alert" th:if="${param.msg}">
+						<span th:text="${param.msg[0]}">An unexpected error occurs</span>
+					</div>
+					<form class="form-horizontal" role="form" action="#" th:action="@{/players/save}" th:object="${playerForm}"
+						method="post" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="playerId" class="col-sm-2 control-label">Player Id</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="player" th:field="*{playerId}" readonly="readonly" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="playerPicture" class="col-sm-2 control-label">Player Picture</label>
+							<div class="col-sm-1">
+								<img class="gcgameimg" th:src="@{'data:image/png;base64,'+*{playerPicture}}" />
+							</div>
+							<div class="col-sm-9">
+								<input type="file" class="form-control input-sm" id="playerPicture" name="playerPicture"
+									th:field="*{playerPictureRaw}" />
+							</div>
+						</div>
+						<div th:class="${#fields.hasErrors('playerUsername')? 'form-group has-error' : 'form-group'}">
+							<label for="playerUsername" class="col-sm-2 control-label">Player Username</label>
+							<div class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerUsername')}" th:errors="*{playerUsername}">An
+									unexpected error occurs</span>
+								<input type="text" class="form-control" id="playerUsername" placeholder="Player Username"
+									th:field="*{playerUsername}" />
+							</div>
+						</div>
+						<div th:class="${#fields.hasErrors('playerPassword')? 'form-group has-error' : 'form-group'}">
+							<label for="playerPassword" class="col-sm-2 control-label">Player Password</label>
+							<div class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerPassword')}" th:errors="*{playerPassword}">An
+									unexpected error occurs</span>
+								<input type="password" class="form-control" id="playerPassword" placeholder="*************"
+									th:field="*{playerPassword}" />
+							</div>
+						</div>
+						<div th:class="${#fields.hasErrors('playerDisplayName')? 'form-group has-error' : 'form-group'}">
+							<label for="playerDisplayName" class="col-sm-2 control-label">Player DisplayName</label>
+							<div class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerDisplayName')}" th:errors="*{playerDisplayName}">An
+									unexpected error occurs</span>
+								<input type="text" class="form-control" id="playerDisplayName" placeholder="Player DisplayName"
+									th:field="*{playerDisplayName}" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="playerFirstName" class="col-sm-2 control-label">Player FirstName</label>
+							<div class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerFirstName')}" th:errors="*{playerFirstName}">An
+									unexpected error occurs</span>
+								<input type="text" class="form-control" id="playerFirstName" placeholder="Player FirstName"
+									th:field="*{playerFirstName}" />
+							</div>
+						</div>
+						<div th:class="${#fields.hasErrors('playerLastName')? 'form-group has-error' : 'form-group'}">
+							<label for="playerLastName" class="col-sm-2 control-label">Player LastName</label>
+							<div class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerLastName')}" th:errors="*{playerLastName}">error</span>
+								<input type="text" class="form-control" id="playerLastName" placeholder="Player LastName"
+									th:field="*{playerLastName}" />
+							</div>
+						</div>
+						<div th:class="${#fields.hasErrors('playerEmail')? 'form-group has-error' : 'form-group'}">
+							<label for="playerEmail" class="col-sm-2 control-label">Player Email</label>
+							<div class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerEmail')}" th:errors="*{playerEmail}">error</span>
+								<input type="email" class="form-control" id="playerEmail" placeholder="Player@Email" th:field="*{playerEmail}" />
+							</div>
+						</div>
+						<div th:class="${#fields.hasErrors('playerBirthdate')? 'form-group has-error' : 'form-group'}">
+							<label for="playerBirthdate" class="col-sm-2 control-label">Player Birthdate</label>
+							<div id="sandbox-container" class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerBirthdate')}" th:errors="*{playerBirthdate}">error</span>
+								<input type="date" class="form-control" id="playerBirthdate" placeholder="yyyy-MM-dd"
+									th:field="*{playerBirthdate}" />
+							</div>
+						</div>
+						<div th:class="${#fields.hasErrors('playerSex')? 'form-group has-error' : 'form-group'}">
+							<label for="playerSex" class="col-sm-2 control-label">Player Sex</label>
+							<div class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerSex')}" th:errors="*{playerBirthdate}">error</span>
+								<select class="form-control" id="playerSex" th:field="*{playerSex}">
+									<option value=""></option>
+									<option value="Male">Male</option>
+									<option value="Female">Female</option>
+								</select>
+							</div>
+						</div>
+						<div th:class="${#fields.hasErrors('playerPlatform')? 'form-group has-error' : 'form-group'}">
+							<label for="playerPlatform" class="col-sm-2 control-label">Player Platform</label>
+							<div class="col-sm-10">
+								<span class="text-danger" th:if="${#fields.hasErrors('playerPlatform')}" th:errors="*{playerPlatform}">error</span>
+								<select class="form-control" id="playerPlatform" th:field="*{playerPlatform}">
+									<option value="MAC">MAC</option>
+									<option value="PC">PC</option>
+									<option value="WEBPLAYER">WEBPLAYER</option>
+									<option value="WII">WII</option>
+									<option value="IPHONE">IPHONE</option>
+									<option value="ANDROID">ANDROID</option>
+									<option value="PS3">PS3</option>
+									<option value="XBOX">XBOX</option>
+									<option value="FLASH">FLASH</option>
+									<option value="LINUX">LINUX</option>
+									<option value="WINDOWS_STORE_APP">WINDOWS_STORE_APP</option>
+									<option value="WINDOWS_PHONE_8">WINDOWS_PHONE_8</option>
+									<option value="BLACKBERRY">BLACKBERRY</option>
+									<option value="UNKNOWN">UNKNOWN</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<div class="checkbox">
+									<label> <input type="checkbox" th:field="*{playerEnabled}" />Player Enabled
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<a href="/players" class="btn btn-default" role="button">Cancel</a>
+								<button type="submit" class="btn btn-primary">Save Player</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row">&nbsp;</div>
+		</div>
+	</div>
+	<div id="footer" th:include="footer :: footer"></div>
+
+
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script type="text/javascript" src="../../resources/js/jquery-1.11.1.min.js"
+		th:href="@{/resources/js/jquery-1.11.1.min.js}"></script>
+	<script type="text/javascript" src="../../resources/js/bootstrap.min.js" th:href="@{/resources/js/bootstrap.min.js}"></script>
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<script type="text/javascript" src="../../resources/js/ie10-viewport-bug-workaround.js"
+		th:href="@{/resources/js/ie10-viewport-bug-workaround.js}"></script>
+	<!-- Bootstrap DatePicker -->
+	<script type="text/javascript" src="../../resources/js/bootstrap-datepicker.js"
+		th:href="@{/resources/js/bootstrap-datepicker.js}"></script>
+
+	<script type="text/javascript">
+		$('#sandbox-container input').datepicker({
+			format : "yyyy-mm-dd",
+			autoclose : true,
+			todayHighlight : true
+		});
+	</script>
+</body>
+</html>

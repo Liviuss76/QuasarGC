@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[3.6.1.201408250730-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[true]]></enableImports>
+	<configs>
+	</configs>
+	<autoconfigs>
+		<config>java:com.nakedquasar.gamecenter.Application</config>
+		<config>java:com.nakedquasar.gamecenter.config.CoreConfig</config>
+	</autoconfigs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>
