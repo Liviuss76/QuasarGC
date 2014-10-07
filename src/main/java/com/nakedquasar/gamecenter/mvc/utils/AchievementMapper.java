@@ -21,6 +21,7 @@ public class AchievementMapper {
 		dto.setAchievementBonusPoints(achievement.getAchievementGivePoints());
 		dto.setAchievementHidden(achievement.isAchievementHidden());
 		dto.setAchievementRepeatable(achievement.isAchievementRepeatable());
+		dto.setAchievementIncrementPoints(achievement.isAchievementIncrementPoints());
 		dto.setAchievementCreationDate(achievement.getAchievementCreationDate());
 		return dto;
 	}

@@ -32,6 +32,7 @@ public class AchievementDto implements Serializable {
 	private Long achievementBonusPoints;
 	private boolean achievementHidden;
 	private boolean achievementRepeatable;
+	private boolean achievementIncrementPoints;
 	private Date achievementCreationDate;
 	private MultipartFile achievementImageRaw;
 	public Long getAchievementId() {
@@ -105,6 +106,12 @@ public class AchievementDto implements Serializable {
 	}
 	public void setAchievementImageRaw(MultipartFile achievementImageRaw) {
 		this.achievementImageRaw = achievementImageRaw;
+	}
+	public boolean isAchievementIncrementPoints() {
+		return achievementIncrementPoints;
+	}
+	public void setAchievementIncrementPoints(boolean achievementincrementpoints) {
+		this.achievementIncrementPoints = achievementincrementpoints;
 	}
 	
 	

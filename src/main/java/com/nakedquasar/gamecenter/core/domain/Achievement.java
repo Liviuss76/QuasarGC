@@ -43,6 +43,9 @@ public class Achievement {
 	@Column(name = "achievementunlockpoints", nullable = false, unique = false)
 	private double achievementUnlockPoints;
 	
+	@Column(name = "achievementincrementpoints", nullable = false)
+	private boolean achievementIncrementPoints;
+	
 	@Column(name = "achievementgivepoints", nullable = false, unique = false)
 	private Long achievementGivePoints;
 	
@@ -141,5 +144,13 @@ public class Achievement {
 
 	public void setAchievementCreationDate(Date achievementCreationDate) {
 		this.achievementCreationDate = achievementCreationDate;
+	}
+
+	public boolean isAchievementIncrementPoints() {
+		return achievementIncrementPoints;
+	}
+
+	public void setAchievementIncrementPoints(boolean achievementIncrementPoints) {
+		this.achievementIncrementPoints = achievementIncrementPoints;
 	}
 }

@@ -51,10 +51,11 @@
 							<col style="width: 23%;" />
 							<col style="width: 23%;" />
 							<col style="width: 13%;" />
-							<col style="width: 12%;" />
-							<col style="width: 12%;" />
-							<col style="width: 12%;" />
-							<col style="width: 3%;" />
+							<col style="width: 10%;" />
+							<col style="width: 10%;" />
+							<col style="width: 10%;" />
+							<col style="width: 7%;" />
+							<col style="width: 2%;" />
 						</colgroup>
 						<thead>
 							<tr>
@@ -66,6 +67,7 @@
 								<th colspan="1">Bonus Points</th>
 								<th colspan="1">Hidden</th>
 								<th colspan="1">Repeatable</th>
+								<th colspan="1">Incremental</th>
 								<th colspan="1"></th>
 							</tr>
 						</thead>
@@ -82,6 +84,7 @@
 								<td th:text="${g.achievementBonusPoints}">BonusPoints</td>
 								<td th:text="${g.achievementHidden}">Visibility</td>
 								<td th:text="${g.achievementRepeatable}">Repeatable</td>
+								<td th:text="${g.achievementIncrementPoints}">Incremental</td>
 								<td><a href="#" class="btn btn-xs btn-primary delete" role="button" Onclick="return ConfirmDelete();"
 									th:href="@{/achievements/delete(id=${g.achievementId})}">Delete</a></td>
 							</tr>

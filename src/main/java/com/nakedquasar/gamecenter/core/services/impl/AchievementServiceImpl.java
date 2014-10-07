@@ -66,6 +66,7 @@ public class AchievementServiceImpl implements AchievementService {
 			newAchievement.setAchievementGivePoints(achievement.getAchievementBonusPoints());
 			newAchievement.setAchievementHidden(achievement.isAchievementHidden());
 			newAchievement.setAchievementRepeatable(achievement.isAchievementRepeatable());
+			newAchievement.setAchievementIncrementPoints(achievement.isAchievementIncrementPoints());
 			newAchievement.setAchievementCreationDate(new Date(new java.util.Date().getTime()));
 		}
 		return achievementsRepository.saveAndFlush(newAchievement);
@@ -104,6 +105,7 @@ public class AchievementServiceImpl implements AchievementService {
 			achievement.setAchievementGivePoints(achievementDto.getAchievementBonusPoints());
 			achievement.setAchievementHidden(achievementDto.isAchievementHidden());
 			achievement.setAchievementRepeatable(achievementDto.isAchievementRepeatable());
+			achievement.setAchievementIncrementPoints(achievementDto.isAchievementIncrementPoints());
 			return achievementsRepository.saveAndFlush(achievement);
 		}
 	}
@@ -263,24 +265,44 @@ public class AchievementServiceImpl implements AchievementService {
 				throw new Exception("Achievement already unlocked");
 			}
 
-			if (playerachievement.getUnlockpoints() + playerAchievementProgress.getAchievementUnlockPoints() >= ach
-					.getAchievementUnlockPoints()) {
-				if (ach.isAchievementRepeatable()) {
-					playerachievement.setUnlockpoints(0);
-					playerachievement.setUnlockedcount(playerachievement.getUnlockedcount() + 1);
-					papr.setPlayerAchievement(AchievementMapper.mapJson(ach, playerachievement));
-					papr.setAchievementProgress(100);
+			if (ach.isAchievementIncrementPoints()) {
+				if (playerachievement.getUnlockpoints() + playerAchievementProgress.getAchievementUnlockPoints() >= ach
+						.getAchievementUnlockPoints()) {
+					if (ach.isAchievementRepeatable()) {
+						playerachievement.setUnlockpoints(0);
+						playerachievement.setUnlockedcount(playerachievement.getUnlockedcount() + 1);
+						papr.setPlayerAchievement(AchievementMapper.mapJson(ach, playerachievement));
+						papr.setAchievementProgress(100);
+					} else {
+						playerachievement.setUnlockpoints(ach.getAchievementUnlockPoints());
+						playerachievement.setUnlockedcount(1);
+						papr.setPlayerAchievement(AchievementMapper.mapJson(ach, playerachievement));
+						papr.setAchievementProgress(100);
+					}
 				} else {
-					playerachievement.setUnlockpoints(ach.getAchievementUnlockPoints());
-					playerachievement.setUnlockedcount(1);
-					papr.setPlayerAchievement(AchievementMapper.mapJson(ach, playerachievement));
-					papr.setAchievementProgress(100);
+					playerachievement.setUnlockpoints(playerachievement.getUnlockpoints()
+							+ playerAchievementProgress.getAchievementUnlockPoints());
+					double progress = (ach.getAchievementUnlockPoints() / 100.0) * playerachievement.getUnlockpoints();
+					papr.setAchievementProgress(progress);
 				}
 			} else {
-				playerachievement.setUnlockpoints(playerachievement.getUnlockpoints()
-						+ playerAchievementProgress.getAchievementUnlockPoints());
-				double progress = (ach.getAchievementUnlockPoints() / 100.0) * playerachievement.getUnlockpoints();
-				papr.setAchievementProgress(progress);
+				if (playerAchievementProgress.getAchievementUnlockPoints() >= ach.getAchievementUnlockPoints()) {
+					if (ach.isAchievementRepeatable()) {
+						playerachievement.setUnlockpoints(0);
+						playerachievement.setUnlockedcount(playerachievement.getUnlockedcount() + 1);
+						papr.setPlayerAchievement(AchievementMapper.mapJson(ach, playerachievement));
+						papr.setAchievementProgress(100);
+					} else {
+						playerachievement.setUnlockpoints(ach.getAchievementUnlockPoints());
+						playerachievement.setUnlockedcount(1);
+						papr.setPlayerAchievement(AchievementMapper.mapJson(ach, playerachievement));
+						papr.setAchievementProgress(100);
+					}
+				}else{
+					playerachievement.setUnlockpoints(playerAchievementProgress.getAchievementUnlockPoints());
+					double progress = (ach.getAchievementUnlockPoints() / 100.0) * playerachievement.getUnlockpoints();
+					papr.setAchievementProgress(progress);
+				}
 			}
 
 			playerachievement = playerAchievementsRepository.saveAndFlush(playerachievement);
@@ -315,7 +337,8 @@ public class AchievementServiceImpl implements AchievementService {
 			plDto.setAchievementUnlockPoints(playerAchievement.getId().getAchievement().getAchievementUnlockPoints());
 			plDto.setCurrentUnlockPoints(playerAchievement.getUnlockpoints());
 			plDto.setUnlockedcount(playerAchievement.getUnlockedcount());
-			double progress = (playerAchievement.getId().getAchievement().getAchievementUnlockPoints() / 100.0) * playerAchievement.getUnlockpoints();
+			double progress = (playerAchievement.getId().getAchievement().getAchievementUnlockPoints() / 100.0)
+					* playerAchievement.getUnlockpoints();
 			plDto.setAchievementProgress(progress);
 			plachDtos.add(plDto);
 		}
