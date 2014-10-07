@@ -1,8 +1,10 @@
 QuasarGC
 ========
 
-Quasar Game Center it's a self-hosted Java application designed to provide a backend service for Games in order to host Leaderboards, Achievements and Player profiles. 
-Quasar Game Center use spring boot application with embedded Tomcat 7 with thymeleaf frontend and postgresql backend in a self hosting .jar file built by maven.
+Quasar Game Center it's a self-hosted Java application designed to provide a backend service for Games.  
+The main purpose of this application is to provide a solution for game developers who's target platform is Windows since Xbox API for gamecenter is not public.  
+Quasar Game Center has ability to handle Player profiles, Leaderboards and Achievements trough a RESTful API.  
+Quasar Game Center is built on top of spring boot application with embedded Tomcat 7 with thymeleaf front-end and PostgreSQL back-end in a self hosting .jar file built by maven.
 
 ###### Technologies
 * Spring Boot + Security + MVC
@@ -13,6 +15,7 @@ Quasar Game Center use spring boot application with embedded Tomcat 7 with thyme
 * PostgreSQL 9.3
 
 ###### Features
+* Multiple Games
 * Leaderboards
 * Achievements
 * Players profiles
@@ -20,6 +23,7 @@ Quasar Game Center use spring boot application with embedded Tomcat 7 with thyme
 * Activity Logs
 * Admin GUI  
 * RESTful API
+* Bruteforce protection
 * Unity3d Plugin
 
 Installation and Getting Started  
