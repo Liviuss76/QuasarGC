@@ -46,7 +46,7 @@ public class AchievementMapper {
 		dto.setAchievementProgress(0);
 		return dto;
 	}
-	
+
 	public static PlayerAchievementResponse mapJson(Achievement achievement, PlayerAchievement playerAchievement) {
 		PlayerAchievementResponse dto = new PlayerAchievementResponse();
 		dto.setAchievementName(achievement.getAchievementName());
@@ -57,18 +57,16 @@ public class AchievementMapper {
 		dto.setAchievementBonusPoints(achievement.getAchievementGivePoints());
 		dto.setAchievementRepeatable(achievement.isAchievementRepeatable());
 		dto.setAchievementProgress(0);
-		
-			if (playerAchievement.getUnlockpoints() >= achievement
-					.getAchievementUnlockPoints()) {
-				dto.setAchievementProgress(100.0);
-				dto.setAchievementUnlocked(playerAchievement.getUnlockedcount() > 0);
-			} else {
-				double progress = (achievement.getAchievementUnlockPoints() / 100.0)
-						* playerAchievement.getUnlockpoints();
-				dto.setAchievementProgress(progress);
-				dto.setAchievementUnlocked(playerAchievement.getUnlockedcount() > 0);
-			}
-		
+
+		if (playerAchievement.getUnlockpoints() >= achievement.getAchievementUnlockPoints()) {
+			dto.setAchievementProgress(100.0);
+			dto.setAchievementUnlocked(playerAchievement.getUnlockedcount() > 0);
+		} else {
+			double progress = (achievement.getAchievementUnlockPoints() / 100.0) * playerAchievement.getUnlockpoints();
+			dto.setAchievementProgress(progress);
+			dto.setAchievementUnlocked(playerAchievement.getUnlockedcount() > 0);
+		}
+
 		return dto;
 	}
 
@@ -85,7 +83,7 @@ public class AchievementMapper {
 	public static List<PlayerAchievementResponse> mapJson(List<Achievement> achievements,
 			List<PlayerAchievement> playerAchievements) {
 		List<PlayerAchievementResponse> dtos = new ArrayList<PlayerAchievementResponse>();
-		
+
 		for (Achievement achievement : achievements) {
 			if (!achievement.isAchievementHidden()) {
 				PlayerAchievementResponse playerAchievementResponse = mapJson(achievement);
