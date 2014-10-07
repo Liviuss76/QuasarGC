@@ -10,6 +10,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nakedquasar.gamecenter.mvc.utils.ImageUtils;
+
 public class AchievementDto implements Serializable {
 	private static final long serialVersionUID = 9199651380367108020L;
 	private Long achievementId;
@@ -69,7 +71,7 @@ public class AchievementDto implements Serializable {
 		return achievementImage;
 	}
 	public void setAchievementImage(String achievementImage) {
-		this.achievementImage = achievementImage;
+		this.achievementImage = ImageUtils.resize(achievementImage, 48, 48);
 	}
 	public double getAchievementUnlockPoints() {
 		return achievementUnlockPoints;

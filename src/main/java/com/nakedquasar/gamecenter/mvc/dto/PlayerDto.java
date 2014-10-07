@@ -9,6 +9,8 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nakedquasar.gamecenter.mvc.utils.ImageUtils;
+
 public class PlayerDto {	
 	private UUID playerId;
 	@NotNull
@@ -149,7 +151,7 @@ public class PlayerDto {
 	}
 
 	public void setPlayerPicture(String playerPicture) {
-		this.playerPicture = playerPicture;
+		this.playerPicture = ImageUtils.resize(playerPicture, 48, 48);
 	}
 
 	public String getPlayerPlatformImg() {

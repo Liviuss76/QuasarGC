@@ -8,6 +8,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nakedquasar.gamecenter.mvc.utils.ImageUtils;
+
 public class GameDto implements Serializable {
 	private static final long serialVersionUID = -4477306111829387333L;
 	private UUID gameId;
@@ -54,7 +56,7 @@ public class GameDto implements Serializable {
 		return gameImage;
 	}
 	public void setGameImage(String gameImage) {
-		this.gameImage = gameImage;
+		this.gameImage = ImageUtils.resize(gameImage, 48, 48);
 	}
 	public MultipartFile getGameImageRaw() {
 		return gameImageRaw;
