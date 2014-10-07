@@ -58,7 +58,7 @@ public class SecurityConfig {
             public void configure(WebSecurity web) throws Exception {
                 web
                     .ignoring()
-                        .antMatchers("/resources/**");
+                        .antMatchers("/resources/**","/css/**","/js/**");
             }
 			
 	        @Override

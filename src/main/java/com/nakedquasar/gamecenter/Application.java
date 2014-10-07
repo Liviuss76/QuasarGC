@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.nakedquasar.gamecenter.config.WebAppInitializer;
 
+@EnableAutoConfiguration
 @Configuration
 @ComponentScan
-@EnableAutoConfiguration
 public class Application extends SpringBootServletInitializer{
     public static void main(String[] args) {
         SpringApplication.run(new Class[] {Application.class, WebAppInitializer.class}, args);

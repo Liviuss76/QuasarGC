@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+<meta charset="UTF-8" />
+<!-- Bootstrap -->
+<link type="text/css" rel="stylesheet" href="../static/css/bootstrap.min.css"
+	th:href="@{/css/bootstrap.min.css}" />
+<link type="text/css" rel="stylesheet" href="../static/css/dashboard.css"
+	th:href="@{/css/dashboard.css}" />
+<title>Quasar GC Admin Pannel</title>
+</head>
+<body>
+	<div id="wrap">
+		<div th:include="header :: header" class="navbar navbar-inverse navbar-fixed-top" role="navigation"></div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-10 col-md-10 col-md-offset-2" style="padding: 0; height: 20px;">
+					<ol class="breadcrumb">
+						<li><a href="/players">Players</a></li>
+						<li><span th:text="${playerForm.playerUsername}">Username</span></li>
+						<li>Achievements</li>
+					</ol>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-3 col-md-2 sidebar">
+					<ul class="nav nav-sidebar">
+						<li><img class="img-thumbnail" th:src="@{'data:image/png;base64,'+${playerForm.playerPicture}}"
+							style="width: 48px; height: 48px; margin-left: 20px; margin-bottom: 5px;" /></li>
+						<li><a href="#" th:href="@{/players/edit(id=${playerForm.playerId})}">General Info</a></li>
+						<li><a href="/players/playerleaderboards">Leaderboards&nbsp;<span class="badge"
+									th:text="${playerForm.leaderboardsCount}">42</span></a></li>
+						<li class="active"><a href="/players/playerachievements">Achievements&nbsp;<span class="badge"
+									th:text="${playerForm.achievementsCount}">42</span></a></li>
+						<li><a href="/players/playerlogs">Logs&nbsp;<span class="badge"
+									th:text="${playerForm.logsCount}">42</span></a></li>
+					</ul>
+				</div>
+				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+					<h2 class="page-header">Player Achievements</h2>
+					<div class="alert alert-danger" role="alert" th:if="${param.error}">
+						<strong>Error!</strong>
+						<span th:text="${param.error[0]}">An unexpected error occurs</span>
+					</div>
+					<div class="alert alert-success" role="alert" th:if="${param.msg}">
+						<span th:text="${param.msg[0]}">An unexpected error occurs</span>
+					</div>
+					<table class="table table-striped">
+						<colgroup>
+							<col style="width: 1%;" />
+							<col style="width: 1%;" />
+							<col style="width: 25%;" />
+							<col style="width: 1%;" />
+							<col style="width: 25%;" />
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />
+							<col style="width: 7%;" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th colspan="1">#</th>
+								<th colspan="1"></th>
+								<th colspan="1">Game Name</th>
+								<th colspan="1"></th>
+								<th colspan="1">Achievement Name</th>
+								<th colspan="1">Achievement Code</th>
+								<th colspan="1">Progress</th>
+								<th colspan="1">Times Completed</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="g, row : ${achievements}">
+								<td th:text="${page.prefix} + ${row.index+1}">Nr.</td>
+								<td><a href="#" th:href="@{/games/gogame(id=${g.gameId})}"><img class="gcgameimg"
+										th:src="@{'data:image/png;base64,'+${g.gameImage}}" /></a></td>
+								<td><a href="#" th:href="@{/games/gogame(id=${g.gameId})}"><span th:text="${g.gameName}">GameName</span></a></td>
+								<td><a href="#" th:href="@{/achievements/edit(id=${g.achievementId})}"><img class="gcgameimg"
+										th:src="@{'data:image/png;base64,'+${g.achievementImage}}" /></a></td>
+								<td><a href="#" th:href="@{/players/goach(gameId=${g.gameId},achId=${g.achievementId})}"><span
+											th:text="${g.achievementName}">AchName</span></a></td>
+								<td><span th:text="${g.achievementCode}">AchCode</span></td>
+								<td>
+									<div class="progress" style="background-color: #f55567;">
+										<div class="progress-bar" role="progressbar" th:aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+											th:text="${g.achievementProgress}+'%'" th:style="'width: '+${g.achievementProgress}+'%;'"
+											data-toggle="tooltip" data-placement="top"
+											th:title="${g.currentUnlockPoints}+' / '+${g.achievementUnlockPoints}">0%</div>
+									</div>
+								</td>
+								<td th:text="${g.unlockedcount}"></td>
+							</tr>
+						</tbody>
+					</table>
+					<div th:include="pagination :: paginationbar"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<script type="text/javascript" src="/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>

@@ -88,13 +88,6 @@
 			<version>4.3.6.Final</version>
 		</dependency>
 
-		<!-- JSTL Tag Library -->
-		<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
-
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>

@@ -5,15 +5,12 @@ Quasar Game Center it's a self-hosted Java application designed to provide a bac
 Quasar Game Center use spring boot application with embedded Tomcat 7 with thymeleaf frontend and postgresql backend in a self hosting .jar file built by maven.
 
 ###### Technologies
-* Spring Boot 
-* Spring Security
-* Spring MVC
-* JPA
-* Hibernate
+* Spring Boot + Security + MVC
+* JPA + Hibernate
 * Tomcat 7
 * Thymeleaf
 * Bootstrap
-* PostgresSQL 9.3
+* PostgreSQL 9.3
 
 ###### Features
 * Leaderboards
@@ -22,6 +19,8 @@ Quasar Game Center use spring boot application with embedded Tomcat 7 with thyme
 * Players management
 * Activity Logs
 * Admin GUI  
+* RESTful API
+* Unity3d Plugin
 
 Installation and Getting Started  
 ========  
@@ -35,9 +34,9 @@ On Linux you can use Yum [https://wiki.postgresql.org/wiki/YUM_Installation](htt
 ```
 	$ psql < quasargc_1.0.1.sql
 ```
-After execution you will get a fully functional database named "quasargc" with a default user "admin" pass "admin"
-4. Create a folder for server executables and config files
-5. Copy files from folder "Releases" into newly created folder
+After execution you will get a fully functional database named "quasargc" with a default user "admin" pass "admin"  
+4. Create a folder for server executables and config files  
+5. Copy files from folder "Releases" into newly created folder  
 6. Start the server by executing  
 ```
 	$ java -jar quasar-gamecenter-1.0.1-BUILD.jar
@@ -78,5 +77,5 @@ Build from source
 ###### Build with Maven
 
 ```
-	mvn clean package
+	$ mvn clean package
 ```

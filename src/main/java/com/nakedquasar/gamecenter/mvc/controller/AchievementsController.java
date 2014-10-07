@@ -95,7 +95,7 @@ public class AchievementsController {
 				}
 				model.addAttribute("gameDto", gt);
 				model.addAttribute("achievementForm", achievementDto);
-				return "/achievement";
+				return "achievement";
 			}
 
 			if (achievementDto.getAchievementImageRaw() != null && !achievementDto.getAchievementImageRaw().isEmpty()) {
