@@ -37,7 +37,12 @@ On Linux you can use Yum [https://wiki.postgresql.org/wiki/YUM_Installation](htt
 After execution you will get a fully functional database named "quasargc" with a default user "admin" pass "admin"  
 4. Create a folder for server executables and config files  
 5. Copy files from folder "Releases" into newly created folder  
-6. Start the server by executing  
+6. Generate a new keystore file for Tomcat SSL xonnector. keytool utility is located in $JAVA_HOME/bin folder
+```
+	$ keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
+```  
+Pay attention at "What is your first and last name?" question, here you need to enter dns name of the server "ex: domain.com" otherwise you will get errors on rest client.  
+7. Start the server by executing  
 ```
 	$ java -jar quasar-gamecenter-1.0.1-BUILD.jar
 ```
