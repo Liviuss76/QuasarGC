@@ -3,6 +3,8 @@ package com.nakedquasar.gamecenter.mvc.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.nakedquasar.gamecenter.mvc.utils.ImageUtils;
+
 public class PlayerAchievementDto implements Serializable {
 	private static final long serialVersionUID = 5044436380054731827L;
 	private UUID gameId;
@@ -38,7 +40,7 @@ public class PlayerAchievementDto implements Serializable {
 	}
 
 	public void setGameImage(String gameImage) {
-		this.gameImage = gameImage;
+		this.gameImage = ImageUtils.resize(gameImage, 48, 48);
 	}
 
 	public String getAchievementCode() {
@@ -70,7 +72,7 @@ public class PlayerAchievementDto implements Serializable {
 	}
 
 	public void setAchievementImage(String achievementImage) {
-		this.achievementImage = achievementImage;
+		this.achievementImage = ImageUtils.resize(achievementImage, 48, 48);
 	}
 
 	public double getAchievementUnlockPoints() {
