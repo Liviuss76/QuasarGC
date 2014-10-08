@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 
 import com.nakedquasar.gamecenter.core.domain.Achievement;
 import com.nakedquasar.gamecenter.core.domain.Player;
+import com.nakedquasar.gamecenter.core.domain.PlayerAchievement;
 import com.nakedquasar.gamecenter.mvc.dto.AchievementDto;
-import com.nakedquasar.gamecenter.mvc.dto.PlayerAchievementDto;
-import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementProgressSubmit;
 import com.nakedquasar.gamecenter.rest.controller.beans.AllAchievementsResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementProgressResponse;
+import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementProgressSubmit;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementResponse;
 
 public interface AchievementService {
@@ -44,5 +44,5 @@ public interface AchievementService {
 	
 	public int getPlayerAchievementsCount(UUID playerId);
 
-	public Page<PlayerAchievementDto> getPlayerAchievements(Pageable pageable, UUID playerId);
+	public Page<PlayerAchievement> getPlayerAchievements(Pageable pageable, UUID playerId);
 }

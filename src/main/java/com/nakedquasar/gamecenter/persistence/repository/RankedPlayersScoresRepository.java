@@ -3,6 +3,7 @@ package com.nakedquasar.gamecenter.persistence.repository;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +26,5 @@ public interface RankedPlayersScoresRepository extends JpaRepository<PlayerScore
 	public int getCountLeaderboardsForPlayerId(@Param("playerId") UUID playerId);
 	
 	@Query("SELECT ps FROM PlayerScoreRank ps WHERE ps.player.playerId =:playerId ORDER BY ps.score DESC)")
-	public List<PlayerScoreRank> findByPlayerId(@Param("playerId") UUID playerId);
+	public Page<PlayerScoreRank> findByPlayerId(@Param("playerId") UUID playerId, Pageable pageable);
 }

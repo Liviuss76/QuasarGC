@@ -6,6 +6,7 @@ import java.util.List;
 import com.nakedquasar.gamecenter.core.domain.Achievement;
 import com.nakedquasar.gamecenter.core.domain.PlayerAchievement;
 import com.nakedquasar.gamecenter.mvc.dto.AchievementDto;
+import com.nakedquasar.gamecenter.mvc.dto.PlayerAchievementDto;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementResponse;
 
 public class AchievementMapper {
@@ -26,6 +27,33 @@ public class AchievementMapper {
 		return dto;
 	}
 
+	public static PlayerAchievementDto map(PlayerAchievement playerAchievement) {
+		PlayerAchievementDto plDto = new PlayerAchievementDto();
+		plDto.setGameId(playerAchievement.getId().getAchievement().getGame().getGameId());
+		plDto.setGameName(playerAchievement.getId().getAchievement().getGame().getGameName());
+		plDto.setGameImage(playerAchievement.getId().getAchievement().getGame().getGameImage());
+		plDto.setAchievementId(playerAchievement.getId().getAchievement().getAchievementId());
+		plDto.setAchievementCode(playerAchievement.getId().getAchievement().getAchievementCode());
+		plDto.setAchievementImage(playerAchievement.getId().getAchievement().getAchievementImage());
+		plDto.setAchievementName(playerAchievement.getId().getAchievement().getAchievementName());
+		plDto.setAchievementUnlockPoints(playerAchievement.getId().getAchievement().getAchievementUnlockPoints());
+		plDto.setCurrentUnlockPoints(playerAchievement.getUnlockpoints());
+		plDto.setUnlockedcount(playerAchievement.getUnlockedcount());
+		double progress = (playerAchievement.getId().getAchievement().getAchievementUnlockPoints() / 100.0)
+				* playerAchievement.getUnlockpoints();
+		plDto.setAchievementProgress(progress);
+		return plDto;
+	}
+
+	public static List<PlayerAchievementDto> mapPlayerAchievements(List<PlayerAchievement> playerAchievements) {
+		List<PlayerAchievementDto> plachDtos = new ArrayList<PlayerAchievementDto>();
+		for (PlayerAchievement playerAchievement : playerAchievements) {
+			plachDtos.add(map(playerAchievement));
+		}
+		return plachDtos;
+	}
+
+	
 	public static List<AchievementDto> map(List<Achievement> achievements) {
 		List<AchievementDto> dtos = new ArrayList<AchievementDto>();
 		for (Achievement achievement : achievements) {
@@ -33,7 +61,6 @@ public class AchievementMapper {
 		}
 		return dtos;
 	}
-
 	public static PlayerAchievementResponse mapJson(Achievement achievement) {
 		PlayerAchievementResponse dto = new PlayerAchievementResponse();
 		dto.setAchievementName(achievement.getAchievementName());

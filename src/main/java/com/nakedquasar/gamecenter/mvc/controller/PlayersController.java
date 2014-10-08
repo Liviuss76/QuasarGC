@@ -2,7 +2,6 @@ package com.nakedquasar.gamecenter.mvc.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -24,6 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.nakedquasar.gamecenter.core.domain.Player;
+import com.nakedquasar.gamecenter.core.domain.PlayerAchievement;
+import com.nakedquasar.gamecenter.core.domain.PlayerLog;
+import com.nakedquasar.gamecenter.core.domain.PlayerScoreRank;
 import com.nakedquasar.gamecenter.core.services.AchievementService;
 import com.nakedquasar.gamecenter.core.services.GameService;
 import com.nakedquasar.gamecenter.core.services.LeaderboardService;
@@ -31,12 +33,12 @@ import com.nakedquasar.gamecenter.core.services.LogsService;
 import com.nakedquasar.gamecenter.core.services.PlayerService;
 import com.nakedquasar.gamecenter.mvc.dto.ChangepasswdDto;
 import com.nakedquasar.gamecenter.mvc.dto.GameDto;
-import com.nakedquasar.gamecenter.mvc.dto.PlayerAchievementDto;
 import com.nakedquasar.gamecenter.mvc.dto.PlayerDto;
-import com.nakedquasar.gamecenter.mvc.dto.PlayerLeaderboardDto;
-import com.nakedquasar.gamecenter.mvc.dto.PlayerLogDto;
 import com.nakedquasar.gamecenter.mvc.dto.SearchFormDto;
+import com.nakedquasar.gamecenter.mvc.utils.AchievementMapper;
 import com.nakedquasar.gamecenter.mvc.utils.GameMapper;
+import com.nakedquasar.gamecenter.mvc.utils.LeaderboardMapper;
+import com.nakedquasar.gamecenter.mvc.utils.LogsMapper;
 import com.nakedquasar.gamecenter.mvc.utils.PageWrapper;
 import com.nakedquasar.gamecenter.mvc.utils.PlayerMapper;
 
@@ -196,17 +198,16 @@ public class PlayersController {
 	}
 
 	@RequestMapping(value = "/playerleaderboards", method = RequestMethod.GET)
-	public String gePlayerLeaderboards(ModelMap model, Pageable pageable, HttpSession session) {
+	public String getPlayerLeaderboards(ModelMap model, Pageable pageable, HttpSession session) {
 		if (session.getAttribute("playerForm") == null) {
 			return "redirect:/players";
 		}
 
 		PlayerDto playerDto = (PlayerDto) session.getAttribute("playerForm");
 
-		PageWrapper<PlayerLeaderboardDto> page = new PageWrapper<PlayerLeaderboardDto>(
-				leaderboardService.getPlayerLeaderboards(pageable, playerDto.getPlayerId()),
-				"/players/playerleaderboards");
-		model.addAttribute("leaderboards", (List<PlayerLeaderboardDto>) page.getContent());
+		PageWrapper<PlayerScoreRank> page = new PageWrapper<PlayerScoreRank>(leaderboardService.getPlayerLeaderboards(
+				pageable, playerDto.getPlayerId()), "/players/playerleaderboards");
+		model.addAttribute("leaderboards", LeaderboardMapper.mapPlayerScoreRanks(page.getContent()));
 		model.addAttribute("playerForm", playerDto);
 		model.addAttribute("page", page);
 
@@ -214,17 +215,17 @@ public class PlayersController {
 	}
 
 	@RequestMapping(value = "/playerachievements", method = RequestMethod.GET)
-	public String gePlayerAchievements(ModelMap model, Pageable pageable, HttpSession session) {
+	public String getPlayerAchievements(ModelMap model, Pageable pageable, HttpSession session) {
 		if (session.getAttribute("playerForm") == null) {
 			return "redirect:/players";
 		}
 
 		PlayerDto playerDto = (PlayerDto) session.getAttribute("playerForm");
 
-		PageWrapper<PlayerAchievementDto> page = new PageWrapper<PlayerAchievementDto>(
+		PageWrapper<PlayerAchievement> page = new PageWrapper<PlayerAchievement>(
 				achievementService.getPlayerAchievements(pageable, playerDto.getPlayerId()),
-				"/player/playerachievements");
-		model.addAttribute("achievements", (List<PlayerAchievementDto>) page.getContent());
+				"/players/playerachievements");
+		model.addAttribute("achievements", AchievementMapper.mapPlayerAchievements(page.getContent()));
 		model.addAttribute("playerForm", playerDto);
 		model.addAttribute("page", page);
 
@@ -232,16 +233,16 @@ public class PlayersController {
 	}
 
 	@RequestMapping(value = "/playerlogs", method = RequestMethod.GET)
-	public String gePlayerLogs(ModelMap model, Pageable pageable, HttpSession session) {
+	public String getPlayerLogs(ModelMap model, Pageable pageable, HttpSession session) {
 		if (session.getAttribute("playerForm") == null) {
 			return "redirect:/players";
 		}
 
 		PlayerDto playerDto = (PlayerDto) session.getAttribute("playerForm");
 
-		PageWrapper<PlayerLogDto> page = new PageWrapper<PlayerLogDto>(logsService.getAllLogsByPlayerId(pageable,
-				playerDto.getPlayerId()), "/player/playerlogs");
-		model.addAttribute("logs", (List<PlayerLogDto>) page.getContent());
+		PageWrapper<PlayerLog> page = new PageWrapper<PlayerLog>(logsService.getAllLogsByPlayerId(
+				playerDto.getPlayerId(), pageable), "/players/playerlogs");
+		model.addAttribute("logs", LogsMapper.map(page.getContent()));
 		model.addAttribute("playerForm", playerDto);
 		model.addAttribute("page", page);
 

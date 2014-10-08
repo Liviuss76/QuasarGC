@@ -41,10 +41,12 @@ public class JPAConfiguration {
 		ret.setUser(databaseUsername);
 		ret.setPassword(databasePassword);
 		ret.setJdbcUrl(databaseUrl);
-		ret.setMinPoolSize(5);
-		ret.setMaxPoolSize(20);
+		ret.setMinPoolSize(20);
+		ret.setMaxPoolSize(100);
 		ret.setCheckoutTimeout(300);
 		ret.setUnreturnedConnectionTimeout(1000);
+		ret.setMaxStatements(1000);
+		ret.setMaxStatementsPerConnection(100);
 		return ret;
 	}
 

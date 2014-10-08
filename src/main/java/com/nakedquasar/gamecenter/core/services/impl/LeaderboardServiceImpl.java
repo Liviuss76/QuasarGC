@@ -1,15 +1,12 @@
 package com.nakedquasar.gamecenter.core.services.impl;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -27,13 +24,12 @@ import com.nakedquasar.gamecenter.core.domain.PlayerScoreKey;
 import com.nakedquasar.gamecenter.core.domain.PlayerScoreRank;
 import com.nakedquasar.gamecenter.core.services.LeaderboardService;
 import com.nakedquasar.gamecenter.mvc.dto.LeaderboardDto;
-import com.nakedquasar.gamecenter.mvc.dto.PlayerLeaderboardDto;
 import com.nakedquasar.gamecenter.persistence.repository.GamesRepository;
 import com.nakedquasar.gamecenter.persistence.repository.LeaderboardsRepository;
 import com.nakedquasar.gamecenter.persistence.repository.PlayersLogsRepository;
 import com.nakedquasar.gamecenter.persistence.repository.PlayersRepository;
-import com.nakedquasar.gamecenter.persistence.repository.RankedPlayersScoresRepository;
 import com.nakedquasar.gamecenter.persistence.repository.PlayersScoresRepository;
+import com.nakedquasar.gamecenter.persistence.repository.RankedPlayersScoresRepository;
 import com.nakedquasar.gamecenter.rest.controller.beans.AllScoresResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerScoreResponse;
 
@@ -217,26 +213,9 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 	}
 
 	@Override
-	public Page<PlayerLeaderboardDto> getPlayerLeaderboards(Pageable pageable, UUID playerId) {
-		List<PlayerLeaderboardDto> plDtos = new ArrayList<PlayerLeaderboardDto>();
-		
+	public Page<PlayerScoreRank> getPlayerLeaderboards(Pageable pageable, UUID playerId) {
 		Player player = playerRepository.findOne(playerId);
-		List<PlayerScoreRank> psRanks = rankedScoresRepository.findByPlayerId(player.getPlayerId());
-		
-		for(PlayerScoreRank psRank : psRanks){
-			PlayerLeaderboardDto plDto = new PlayerLeaderboardDto();
-			plDto.setGameId(psRank.getLeaderboard().getGame().getGameId());
-			plDto.setGameName(psRank.getLeaderboard().getGame().getGameName());
-			plDto.setGameImage(psRank.getLeaderboard().getGame().getGameImage());
-			plDto.setLeaderboardId(psRank.getLeaderboard().getLeaderboardId());
-			plDto.setLeaderboardName(psRank.getLeaderboard().getLeaderboardName());
-			plDto.setLeaderBoardImage(psRank.getLeaderboard().getLeaderBoardImage());
-			plDto.setCurrentScore(psRank.getScore());
-			plDto.setCurrentRank(psRank.getRank());
-			plDtos.add(plDto);
-		}
-
-		return new PageImpl<PlayerLeaderboardDto>(plDtos);
+		return rankedScoresRepository.findByPlayerId(player.getPlayerId(), pageable);
 	}
 
 	@Override

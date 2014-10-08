@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.nakedquasar.gamecenter.core.domain.LeaderBoard;
+import com.nakedquasar.gamecenter.core.domain.PlayerScoreRank;
 import com.nakedquasar.gamecenter.mvc.dto.LeaderboardDto;
-import com.nakedquasar.gamecenter.mvc.dto.PlayerLeaderboardDto;
 import com.nakedquasar.gamecenter.rest.controller.beans.AllScoresResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerScoreResponse;
 
@@ -24,7 +24,7 @@ public interface LeaderboardService {
 
 	public Page<LeaderBoard> getAllLeaderboardsByGameId(Pageable pageable, UUID gameId);
 	
-	public Page<PlayerLeaderboardDto> getPlayerLeaderboards(Pageable pageable, UUID playerId);
+	public Page<PlayerScoreRank> getPlayerLeaderboards(Pageable pageable, UUID playerId);
 	
 	public int getPlayerLeaderboardsCount(UUID playerId);
 

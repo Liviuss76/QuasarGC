@@ -1,7 +1,6 @@
 package com.nakedquasar.gamecenter.core.services.impl;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,7 +8,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +18,6 @@ import com.nakedquasar.gamecenter.core.domain.PlayerAchievementKey;
 import com.nakedquasar.gamecenter.core.domain.PlayerLog;
 import com.nakedquasar.gamecenter.core.services.AchievementService;
 import com.nakedquasar.gamecenter.mvc.dto.AchievementDto;
-import com.nakedquasar.gamecenter.mvc.dto.PlayerAchievementDto;
 import com.nakedquasar.gamecenter.mvc.utils.AchievementMapper;
 import com.nakedquasar.gamecenter.persistence.repository.AchievementsRepository;
 import com.nakedquasar.gamecenter.persistence.repository.GamesRepository;
@@ -298,7 +295,7 @@ public class AchievementServiceImpl implements AchievementService {
 						papr.setPlayerAchievement(AchievementMapper.mapJson(ach, playerachievement));
 						papr.setAchievementProgress(100);
 					}
-				}else{
+				} else {
 					playerachievement.setUnlockpoints(playerAchievementProgress.getAchievementUnlockPoints());
 					double progress = (ach.getAchievementUnlockPoints() / 100.0) * playerachievement.getUnlockpoints();
 					papr.setAchievementProgress(progress);
@@ -319,31 +316,9 @@ public class AchievementServiceImpl implements AchievementService {
 	}
 
 	@Override
-	public Page<PlayerAchievementDto> getPlayerAchievements(Pageable pageable, UUID playerId) {
-		List<PlayerAchievementDto> plachDtos = new ArrayList<PlayerAchievementDto>();
-
+	public Page<PlayerAchievement> getPlayerAchievements(Pageable pageable, UUID playerId) {
 		Player player = playerRepository.findOne(playerId);
-		List<PlayerAchievement> playerAchievements = playerAchievementsRepository.findByPlayerId(player.getPlayerId());
-
-		for (PlayerAchievement playerAchievement : playerAchievements) {
-			PlayerAchievementDto plDto = new PlayerAchievementDto();
-			plDto.setGameId(playerAchievement.getId().getAchievement().getGame().getGameId());
-			plDto.setGameName(playerAchievement.getId().getAchievement().getGame().getGameName());
-			plDto.setGameImage(playerAchievement.getId().getAchievement().getGame().getGameImage());
-			plDto.setAchievementId(playerAchievement.getId().getAchievement().getAchievementId());
-			plDto.setAchievementCode(playerAchievement.getId().getAchievement().getAchievementCode());
-			plDto.setAchievementImage(playerAchievement.getId().getAchievement().getAchievementImage());
-			plDto.setAchievementName(playerAchievement.getId().getAchievement().getAchievementName());
-			plDto.setAchievementUnlockPoints(playerAchievement.getId().getAchievement().getAchievementUnlockPoints());
-			plDto.setCurrentUnlockPoints(playerAchievement.getUnlockpoints());
-			plDto.setUnlockedcount(playerAchievement.getUnlockedcount());
-			double progress = (playerAchievement.getId().getAchievement().getAchievementUnlockPoints() / 100.0)
-					* playerAchievement.getUnlockpoints();
-			plDto.setAchievementProgress(progress);
-			plachDtos.add(plDto);
-		}
-
-		return new PageImpl<PlayerAchievementDto>(plachDtos);
+		return playerAchievementsRepository.findByPlayerId(player.getPlayerId(), pageable);
 	}
 
 }

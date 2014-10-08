@@ -39,16 +39,24 @@ body {
 <title>Quasar GC</title>
 </head>
 <body>
+	<div id="wrap">
+		<div class="container">
+			<form th:action="@{/login}" method="post" class="form-signin">
+				<span class="help-block" th:if="${param.error}"> Invalid username and password. </span>
+				<span class="help-block" th:if="${param.logout}"> You have been logged out. </span>
+				<h2 class="form-signin-heading">Please sign in</h2>
+				<input type="text" name="username" class="input-block-level" placeholder="Username" />
+				<input type="password" name="password" class="input-block-level" placeholder="Password" />
+				<button class="btn btn-primary" type="submit">Sign in</button>
+			</form>
+		</div>
+	</div>
+	<div id="footer" style="text-align:center;">
 	<div class="container">
-		<form th:action="@{/login}" method="post" class="form-signin">
-			<span class="help-block" th:if="${param.error}"> Invalid username and password. </span>
-
-			<span class="help-block" th:if="${param.logout}"> You have been logged out. </span>
-			<h2 class="form-signin-heading">Please sign in</h2>
-			<input type="text" name="username" class="input-block-level" placeholder="Username" />
-			<input type="password" name="password" class="input-block-level" placeholder="Password" />
-			<button class="btn btn-primary" type="submit">Sign in</button>
-		</form>
+			<p class="muted credit">Copyright © 
+				<a href="http://nakedquasar.com">Naked Quasar</a>
+			</p>
+		</div>
 	</div>
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
