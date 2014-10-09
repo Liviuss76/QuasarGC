@@ -85,10 +85,75 @@ All server configurations can be found in application.properties file.
   
 REST Api  
 ======== 
+##### http://YOUR SERVER/api/player  
+Notes: Get Player profile  
+RequestMethod: GET  
+Security: Basic Auth  
+Answer:
+```
+{
+	"objectContainer":{
+		"PlayerId":"PlayerId",
+ 	 	"PlayerUsername":"PlayerUsername",
+ 	 	"PlayerDisplayName":"PlayerDisplayName",
+ 	 	"PlayerFirstname":"PlayerFirstname",
+ 	 	"PlayerLastname":"PlayerLastname",
+ 	 	"PlayerEmail":"PlayerEmail",
+ 	 	"PlayerBirthdate":"PlayerBirthdate",
+ 	 	"PlayerSex":"PlayerSex",
+ 	 	"PlayerBlocked":False,
+ 	 	"PlayerPicture":"PlayerPicture"
+	},
+	"ErrorInfo":null
+}
+ ```
+  
+  
+##### http://YOUR SERVER/api/register  
+Notes: Register Player  
+RequestMethod: POST  
+Security: Public access 
+Post Object:
+```
+{
+	"PlayerId":"PlayerId",
+	"PlayerUsername":"PlayerUsername",
+	"PlayerPassword":"PlayerPassword",
+	"PlayerDisplayName":"PlayerDisplayName",
+	"PlayerFirstname":"PlayerFirstname",
+	"PlayerLastname":"PlayerLastname",
+	"PlayerEmail":"PlayerEmail",
+	"PlayerBirthdate":"PlayerBirthdate",
+	"PlayerSex":"PlayerSex",
+	"PlayerBlocked":False,
+	"PlayerPlatform":"PlayerPlatform",
+	"PlayerPicture":"PlayerPicture"
+}
+ ```
+Answer:
+```
+{
+	"objectContainer":{
+		"PlayerId":"PlayerId",
+ 	 	"PlayerUsername":"PlayerUsername",
+ 	 	"PlayerDisplayName":"PlayerDisplayName",
+ 	 	"PlayerFirstname":"PlayerFirstname",
+ 	 	"PlayerLastname":"PlayerLastname",
+ 	 	"PlayerEmail":"PlayerEmail",
+ 	 	"PlayerBirthdate":"PlayerBirthdate",
+ 	 	"PlayerSex":"PlayerSex",
+ 	 	"PlayerBlocked":False,
+ 	 	"PlayerPicture":"PlayerPicture"
+	},
+	"ErrorInfo":null
+}
+ ```
+   
+     
 ##### http://YOUR SERVER/api/scores  
 Notes: Get all scores for a specific leaderboard  
 RequestMethod: GET  
-RequestParam: String "leaderboard" (mandatory)
+RequestParam: String "leaderboard" (mandatory)  
 RequestParam: Integer "size" (optional)  
 Security: Basic Auth  
 Answer:
@@ -106,10 +171,11 @@ Answer:
 }
  ```
   
+  
 ##### http://YOUR SERVER/api/score  
 Notes: Get Player score for a specific leaderboard  
 RequestMethod: GET  
-RequestParam: String "leaderboard"  (mandatory)
+RequestParam: String "leaderboard"  (mandatory)  
 Security: Basic Auth  
 Answer:
 ```
@@ -126,11 +192,12 @@ Answer:
 }
  ```
   
+  
 ##### http://YOUR SERVER/api/score  
 Notes: Submit Player score for a specific leaderboard  
 RequestMethod: POST  
-Security: Basic Auth 
-Post Object:  
+Security: Basic Auth  
+Post Object:
 ```
 {
 	"LeaderboardId":"LeaderboardId",
