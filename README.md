@@ -83,30 +83,74 @@ All server configurations can be found in application.properties file.
 	login.timetoblock : 2
 ```
   
-REST API  
+REST Api  
 ======== 
-###### http://YOUR SERVER/api/scores  
+##### http://YOUR SERVER/api/scores  
 Notes: Get all scores for a specific leaderboard  
 RequestMethod: GET  
-RequestParam: String "leaderboard"  
+RequestParam: String "leaderboard" (mandatory)
+RequestParam: Integer "size" (optional)  
 Security: Basic Auth  
 Answer:
 ```
- {
-  "objectContainer":[
- 	{
- 	 "playerUsername":"Player",
- 	 "PlayerDisplayName":"Player Name",
- 	 "PlayerScore":2219,
- 	 "PlayerRank":1,
- 	 "PlayerPlatform":"ANDROID",
- 	 "ScoresCount":0
- 	 }
-  ],
-  "ErrorInfo":null
- }
+{
+	"objectContainer":[{
+		"playerUsername":"PlayerUsername",
+ 	 	"PlayerDisplayName":"PlayerDisplayName",
+ 	 	"PlayerScore":2219,
+ 	 	"PlayerRank":1,
+ 	 	"PlayerPlatform":"ANDROID",
+ 	 	"ScoresCount":2
+	}],
+	"ErrorInfo":null
+}
  ```
-
+  
+##### http://YOUR SERVER/api/score  
+Notes: Get Player score for a specific leaderboard  
+RequestMethod: GET  
+RequestParam: String "leaderboard"  (mandatory)
+Security: Basic Auth  
+Answer:
+```
+{
+	"objectContainer":{
+		"playerUsername":"PlayerUsername",
+		"PlayerDisplayName":"PlayerDisplayName",
+		"PlayerScore":1219,
+		"PlayerRank":2,
+		"PlayerPlatform":"MAC",
+		"ScoresCount":2
+	},
+	"ErrorInfo":null
+}
+ ```
+  
+##### http://YOUR SERVER/api/score  
+Notes: Submit Player score for a specific leaderboard  
+RequestMethod: POST  
+Security: Basic Auth 
+Post Object:  
+```
+{
+	"LeaderboardId":"LeaderboardId",
+	"PlayerScore":1219
+}
+ ``` 
+Answer:  
+```
+{
+	"objectContainer":{
+		"playerUsername":"PlayerUsername",
+		"PlayerDisplayName":"PlayerDisplayName",
+		"PlayerScore":1219,
+		"PlayerRank":2,
+		"PlayerPlatform":"MAC",
+		"ScoresCount":2
+	},
+	"ErrorInfo":null
+}
+ ```
 
   
 Build from source 
