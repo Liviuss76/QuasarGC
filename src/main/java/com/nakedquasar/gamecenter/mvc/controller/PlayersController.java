@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.nakedquasar.gamecenter.config.UtilsService;
 import com.nakedquasar.gamecenter.core.domain.Player;
 import com.nakedquasar.gamecenter.core.domain.PlayerAchievement;
 import com.nakedquasar.gamecenter.core.domain.PlayerLog;
@@ -60,6 +61,14 @@ public class PlayersController {
 	@Autowired
 	private LogsService logsService;
 
+	@Autowired
+	UtilsService utilsService;
+	
+	@ModelAttribute("appversion")
+	public String getAppVersion() {
+		return utilsService.getAppVersion();
+	}
+	
 	@ModelAttribute("gamesCount")
 	public int getGamesCount() {
 		return gameService.getGamesCount();
@@ -140,7 +149,7 @@ public class PlayersController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String savePlayer(@Valid @ModelAttribute("playerForm") PlayerDto playerDto, BindingResult result,
-			ModelMap model, RedirectAttributes redirectAttrs) {
+			ModelMap model, RedirectAttributes redirectAttrs, HttpServletRequest request) {
 
 		try {
 			if (result.hasErrors()) {
@@ -152,7 +161,9 @@ public class PlayersController {
 				}
 				return "player";
 			}
-
+			
+			playerDto.setIp(request.getRemoteAddr());
+			
 			if (playerDto.getPlayerPictureRaw() != null && !playerDto.getPlayerPictureRaw().isEmpty()) {
 				validateImage(playerDto.getPlayerPictureRaw());
 				String imageString = Base64.encodeBase64String(playerDto.getPlayerPictureRaw().getBytes());

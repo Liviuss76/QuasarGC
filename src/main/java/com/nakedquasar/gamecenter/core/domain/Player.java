@@ -61,6 +61,9 @@ public class Player {
 	@Column(name = "datetimeofcreation", nullable = false)
 	private Date dateTimeOfCreation;
 	
+	@Column(name = "ip", nullable = true)
+	private String ip;
+	
 	public UUID getPlayerId() {
 		return playerId;
 	}
@@ -171,6 +174,14 @@ public class Player {
 
 	public void setPlayerPicture(String playerPicture) {
 		this.playerPicture = playerPicture;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 }

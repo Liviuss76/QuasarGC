@@ -40,6 +40,7 @@ public class PlayerDto {
 	private int achievementsCount;
 	private int logsCount;
 	private String firstLastName;
+	private String ip;
 	
 	
 	public UUID getPlayerId() {
@@ -248,5 +249,13 @@ public class PlayerDto {
 
 	public void setFirstLastName(String firstLastName) {
 		this.firstLastName = firstLastName;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 }

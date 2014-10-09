@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nakedquasar.gamecenter.config.UtilsService;
 import com.nakedquasar.gamecenter.core.services.GameService;
 import com.nakedquasar.gamecenter.mvc.dto.ChangepasswdDto;
 import com.nakedquasar.gamecenter.mvc.dto.GameDto;
@@ -25,10 +26,17 @@ import com.nakedquasar.gamecenter.mvc.dto.GameDto;
 @Controller
 @RequestMapping("/game")
 public class GameController {
-
 	@Autowired
 	private GameService gameService;
 
+	@Autowired
+	UtilsService utilsService;
+	
+	@ModelAttribute("appversion")
+	public String getAppVersion() {
+		return utilsService.getAppVersion();
+	}
+	
 	@ModelAttribute("passwordForm")
 	public ChangepasswdDto getPasswordForm() {
 		return new ChangepasswdDto();

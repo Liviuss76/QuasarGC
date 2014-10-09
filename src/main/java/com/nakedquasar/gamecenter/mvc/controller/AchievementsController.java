@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.nakedquasar.gamecenter.config.UtilsService;
 import com.nakedquasar.gamecenter.core.domain.Achievement;
 import com.nakedquasar.gamecenter.core.services.AchievementService;
 import com.nakedquasar.gamecenter.mvc.dto.AchievementDto;
@@ -32,10 +33,17 @@ import com.nakedquasar.gamecenter.mvc.utils.PageWrapper;
 @Controller
 @RequestMapping("/achievements")
 public class AchievementsController {
-
 	@Autowired
 	private AchievementService achievementService;
 
+	@Autowired
+	UtilsService utilsService;
+	
+	@ModelAttribute("appversion")
+	public String getAppVersion() {
+		return utilsService.getAppVersion();
+	}
+	
 	@ModelAttribute("passwordForm")
 	public ChangepasswdDto getPasswordForm() {
 		return new ChangepasswdDto();

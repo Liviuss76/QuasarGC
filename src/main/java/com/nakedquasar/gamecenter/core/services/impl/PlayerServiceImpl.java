@@ -71,6 +71,7 @@ public class PlayerServiceImpl implements PlayerService {
 			pl.setPlayerRole("ROLE_USER");
 			pl.setPlayerEnabled(true);
 			pl.setDateTimeOfCreation(new Date(new java.util.Date().getTime()));
+			pl.setIp(ip);
 
 			if (player.getPlayerPicture() != null && !player.getPlayerPicture().trim().isEmpty()) {
 				pl.setPlayerPicture(player.getPlayerPicture());
@@ -173,6 +174,7 @@ public class PlayerServiceImpl implements PlayerService {
 			pl.setPlayerRole("ROLE_USER");
 			pl.setPlayerEnabled(playerDto.isPlayerEnabled());
 			pl.setDateTimeOfCreation(new Date(new java.util.Date().getTime()));
+			pl.setIp(playerDto.getIp());
 		} else {
 			throw new Exception("Username in use");
 		}

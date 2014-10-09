@@ -31,7 +31,7 @@ Installation and Getting Started
 1. Install PostgreSQL server from [http://www.postgresql.org/download/](http://www.postgresql.org/download/)  
 On Linux you can use Yum [https://wiki.postgresql.org/wiki/YUM_Installation](https://wiki.postgresql.org/wiki/YUM_Installation) or Apt [https://wiki.postgresql.org/wiki/Apt](https://wiki.postgresql.org/wiki/Apt)  
 2. Install JavaSE 1.6 or JavaSE 1.7 from [http://www.oracle.com/technetwork/java/javase/downloads/index.html](http://www.oracle.com/technetwork/java/javase/downloads/index.html)  
-3. Get Database schema from folder "Releases". From console execute:  
+3. Get Database schema from folder "Latest build". From console execute:  
 ```
 	$ su postgres
 ```
@@ -40,13 +40,13 @@ On Linux you can use Yum [https://wiki.postgresql.org/wiki/YUM_Installation](htt
 ```
 After execution you will get a fully functional database named "quasargc" with a default user "admin" pass "admin"  
 4. Create a folder for server executables and config files  
-5. Copy files from folder "Releases" into newly created folder  
+5. Copy files from folder "Latest build" into newly created folder  
 6. Generate a new keystore file for Tomcat SSL connector. Keytool utility is located in $JAVA_HOME/bin folder.
 ```
 	$ keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
 ```  
 Pay attention at "What is your first and last name?" question, here you need to enter qualified dns name of the server "ex: domain.com, ex: localhost", otherwise you will get errors on rest client.    
-7. Copy "keystore.p12" file to the folder where executables reside (see p.4). The file provided in "Releases" folder is setup to work with "localhost" name.  
+7. Copy "keystore.p12" file to the folder where executables reside (see p.4). The file provided in "Latest build" folder is setup to work with "localhost" name.  
 8. Update "application.properties" file, from the folder where executables reside (see p.4), and setup "keystore.pass" entry and "keystore.alias" entry if you changed alias for keystore.  
 9. Start the server by executing  
 ```
@@ -114,7 +114,7 @@ Answer:
 ##### http://YOUR SERVER/api/register  
 Notes: Register Player  
 RequestMethod: POST  
-Security: Public access 
+Security: Public access  
 Post Object:
 ```
 {
@@ -156,7 +156,7 @@ Answer:
 ##### http://YOUR SERVER/api/update  
 Notes: Update Player profile  
 RequestMethod: POST  
-Security: Basic Auth 
+Security: Basic Auth  
 Post Object:
 ```
 {
@@ -196,9 +196,10 @@ Answer:
    
     
 ##### http://YOUR SERVER/api/scores  
-Notes: Get all scores for a specific leaderboard  
+Notes: Get all scores for a specific leaderboard. By default return top 10 scores, or offset specified in "page" / "size".      
 RequestMethod: GET  
 RequestParam: String "leaderboard" (mandatory)  
+RequestParam: Integer "page" (optional)    
 RequestParam: Integer "size" (optional)  
 Security: Basic Auth  
 Answer:

@@ -23,6 +23,7 @@ public class PlayerMapper {
 		dto.setPlayerPlatform(player.getPlayerPlatform());
 		dto.setPlayerRole(player.getPlayerRole());
 		dto.setPlayerEnabled(player.isPlayerEnabled());
+		dto.setIp(player.getIp());
 		return dto;
 	}
 

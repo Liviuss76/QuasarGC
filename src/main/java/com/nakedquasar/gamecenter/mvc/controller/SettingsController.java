@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.nakedquasar.gamecenter.config.UtilsService;
 import com.nakedquasar.gamecenter.core.services.BlockedIpsService;
 import com.nakedquasar.gamecenter.core.services.GameService;
 import com.nakedquasar.gamecenter.core.services.PlayerService;
@@ -36,6 +37,14 @@ public class SettingsController {
 	@Autowired
 	private BlockedIpsService blockedipService;
 
+	@Autowired
+	UtilsService utilsService;
+	
+	@ModelAttribute("appversion")
+	public String getAppVersion() {
+		return utilsService.getAppVersion();
+	}
+	
 	@ModelAttribute("gamesCount")
 	public int getGamesCount() {
 		return gameService.getGamesCount();

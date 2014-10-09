@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.nakedquasar.gamecenter.config.UtilsService;
 import com.nakedquasar.gamecenter.core.domain.LeaderBoard;
 import com.nakedquasar.gamecenter.core.services.GameService;
 import com.nakedquasar.gamecenter.core.services.LeaderboardService;
@@ -42,6 +43,14 @@ public class LeaderboardsController {
 	@Autowired
 	private GameService gameService;
 
+	@Autowired
+	UtilsService utilsService;
+	
+	@ModelAttribute("appversion")
+	public String getAppVersion() {
+		return utilsService.getAppVersion();
+	}
+	
 	@ModelAttribute("passwordForm")
 	public ChangepasswdDto getPasswordForm() {
 		return new ChangepasswdDto();

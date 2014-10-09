@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nakedquasar.gamecenter.config.UtilsService;
 import com.nakedquasar.gamecenter.core.domain.Game;
 import com.nakedquasar.gamecenter.core.services.AchievementService;
 import com.nakedquasar.gamecenter.core.services.GameService;
@@ -31,7 +32,6 @@ import com.nakedquasar.gamecenter.mvc.utils.PageWrapper;
 
 @Controller
 public class GamesController {
-
 	@Autowired
 	private GameService gameService;
 	
@@ -40,6 +40,14 @@ public class GamesController {
 	
 	@Autowired
 	private AchievementService achievementService;
+	
+	@Autowired
+	UtilsService utilsService;
+	
+	@ModelAttribute("appversion")
+	public String getAppVersion() {
+		return utilsService.getAppVersion();
+	}
 	
 	@ModelAttribute("gamesCount")
 	public int getGamesCount(){
