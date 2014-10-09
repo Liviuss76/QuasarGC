@@ -104,7 +104,9 @@ Answer:
  	 	"PlayerBlocked":False,
  	 	"PlayerPicture":"PlayerPicture"
 	},
-	"ErrorInfo":null
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
 }
  ```
   
@@ -145,11 +147,54 @@ Answer:
  	 	"PlayerBlocked":False,
  	 	"PlayerPicture":"PlayerPicture"
 	},
-	"ErrorInfo":null
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
 }
  ```
    
-     
+##### http://YOUR SERVER/api/update  
+Notes: Update Player profile  
+RequestMethod: POST  
+Security: Basic Auth 
+Post Object:
+```
+{
+	"PlayerId":"PlayerId",
+	"PlayerPassword":"PlayerPassword",
+	"PlayerDisplayName":"PlayerDisplayName",
+	"PlayerFirstname":"PlayerFirstname",
+	"PlayerLastname":"PlayerLastname",
+	"PlayerEmail":"PlayerEmail",
+	"PlayerBirthdate":"PlayerBirthdate",
+	"PlayerSex":"PlayerSex",
+	"PlayerBlocked":False,
+	"PlayerPlatform":"PlayerPlatform",
+	"PlayerPicture":"PlayerPicture"
+}
+ ```
+Answer:
+```
+{
+	"objectContainer":{
+		"PlayerId":"PlayerId",
+ 	 	"PlayerUsername":"PlayerUsername",
+ 	 	"PlayerDisplayName":"PlayerDisplayName",
+ 	 	"PlayerFirstname":"PlayerFirstname",
+ 	 	"PlayerLastname":"PlayerLastname",
+ 	 	"PlayerEmail":"PlayerEmail",
+ 	 	"PlayerBirthdate":"PlayerBirthdate",
+ 	 	"PlayerSex":"PlayerSex",
+ 	 	"PlayerBlocked":False,
+ 	 	"PlayerPicture":"PlayerPicture"
+	},
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
+}
+ ```
+   
+    
 ##### http://YOUR SERVER/api/scores  
 Notes: Get all scores for a specific leaderboard  
 RequestMethod: GET  
@@ -167,7 +212,9 @@ Answer:
  	 	"PlayerPlatform":"ANDROID",
  	 	"ScoresCount":2
 	}],
-	"ErrorInfo":null
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
 }
  ```
   
@@ -188,7 +235,9 @@ Answer:
 		"PlayerPlatform":"MAC",
 		"ScoresCount":2
 	},
-	"ErrorInfo":null
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
 }
  ```
   
@@ -215,10 +264,124 @@ Answer:
 		"PlayerPlatform":"MAC",
 		"ScoresCount":2
 	},
-	"ErrorInfo":null
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
 }
  ```
 
+##### http://YOUR SERVER/api/achievements 
+Notes: Get all Player achievements for a specific Game
+RequestMethod: GET  
+RequestParam: String "game" (mandatory)  
+Security: Basic Auth  
+Answer:
+```
+{
+	"objectContainer":[{
+		"AchievementName":"AchievementName",
+		"AchievementDesc":"AchievementDesc",
+		"AchievementImage":"AchievementImage",
+		"AchievementCode":"AchievementCode",
+		"AchievementUnlockPoints":100.0,
+		"AchievementBonusPoints":10,
+		"AchievementProgress":90.0,
+		"AchievementUnlocked":False,
+		"AchievementRepeatable":False
+	}],
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
+}
+ ```
+  
+##### http://YOUR SERVER/api/achievement
+Notes: Get Player achievement
+RequestMethod: GET  
+RequestParam: String "code" (mandatory)  
+Security: Basic Auth  
+Answer:
+```
+{
+	"objectContainer":{
+		"AchievementName":"AchievementName",
+		"AchievementDesc":"AchievementDesc",
+		"AchievementImage":"AchievementImage",
+		"AchievementCode":"AchievementCode",
+		"AchievementUnlockPoints":100.0,
+		"AchievementBonusPoints":10,
+		"AchievementProgress":90.0,
+		"AchievementUnlocked":False,
+		"AchievementRepeatable":False
+	},
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
+}
+ ```
+  
+##### http://YOUR SERVER/api/achievement
+Notes: Submit Player achievement progress
+RequestMethod: POST    
+Security: Basic Auth  
+Post Object:
+```
+{
+	"AchievementCode":"AchievementCode",
+	"AchievementUnlockPoints":11.0
+}
+ ``` 
+Answer:
+```
+{
+	"objectContainer":{
+		"AchievementName":"AchievementName",
+		"AchievementDesc":"AchievementDesc",
+		"AchievementImage":"AchievementImage",
+		"AchievementCode":"AchievementCode",
+		"AchievementUnlockPoints":100.0,
+		"AchievementBonusPoints":10,
+		"AchievementProgress":90.0,
+		"AchievementUnlocked":False,
+		"AchievementRepeatable":False
+	},
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
+}
+ ```  
+  
+    
+##### http://YOUR SERVER/api/unlockachievement
+Notes: Submit Player achievement progress
+RequestMethod: POST    
+Security: Basic Auth  
+Post Object:
+```
+{
+	"AchievementCode":"AchievementCode"
+}
+ ``` 
+Answer:
+```
+{
+	"objectContainer":{
+		"AchievementName":"AchievementName",
+		"AchievementDesc":"AchievementDesc",
+		"AchievementImage":"AchievementImage",
+		"AchievementCode":"AchievementCode",
+		"AchievementUnlockPoints":100.0,
+		"AchievementBonusPoints":10,
+		"AchievementProgress":90.0,
+		"AchievementUnlocked":False,
+		"AchievementRepeatable":False
+	},
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
+}
+ ```  
+  
   
 Build from source 
 ========
