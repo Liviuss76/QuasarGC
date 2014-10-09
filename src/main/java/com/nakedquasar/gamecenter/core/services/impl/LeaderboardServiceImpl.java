@@ -55,6 +55,13 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 		Pageable topTen = new PageRequest(page, size);
 		AllScoresResponse apsr = new AllScoresResponse(
 				rankedScoresRepository.findByLeaderboardId(leaderboardId, topTen));
+
+		int scoresCount = requestTotalScoresCount(leaderboardId);
+		
+		for(PlayerScoreResponse psresp: apsr.getPlayerScores()){
+			psresp.setScoresCount(scoresCount);
+		}
+		
 		return apsr;
 	}
 

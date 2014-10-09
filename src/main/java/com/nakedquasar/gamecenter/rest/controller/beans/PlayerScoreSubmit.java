@@ -7,9 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PlayerScoreSubmit {
 	@JsonProperty("LeaderboardId")
 	private String leaderboardId;
-	
-	@JsonProperty("PlayerId")
-	private String playerId;
 
 	@JsonProperty("PlayerScore")
 	private int playerScore;
@@ -23,14 +20,6 @@ public class PlayerScoreSubmit {
 
 	public void setLeaderboardId(String leaderboardId) {
 		this.leaderboardId = leaderboardId;
-	}
-
-	public String getPlayerId() {
-		return playerId;
-	}
-
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
 	}
 
 	public int getPlayerScore() {
