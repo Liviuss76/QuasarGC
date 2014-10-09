@@ -52,11 +52,13 @@ Pay attention at "What is your first and last name?" question, here you need to 
 ```
 	$ java -jar quasar-gamecenter-1.0.1-BUILD.jar
 ```
+Server can be configured to run as service as explained [here](https://github.com/Liviuss76/QuasarGC/wiki/Running%20QuasarGC%20as%20Service%20on%20Linux)
+
 Server should start and listen at port 8443/HTTPS. Admin control panel can be accessed at https://[YOUR IP HERE]:8443/  
 
 Configuration  
 ======== 
-All server configurations can be found in side the application.properties file.
+All server configurations can be found in application.properties file.
 ```
 	#Database URL
 	database.url: jdbc:postgresql://localhost/quasargc
@@ -72,7 +74,7 @@ All server configurations can be found in side the application.properties file.
 	keystore.file: keystore.p12
 	#Keystore Password
 	keystore.pass: localhost
-	#Keystore Type
+	#Keystore Type PKCS12/JKS
 	keystore.type: PKCS12
 	#Keystore alias
 	keystore.alias: tomcat
