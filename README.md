@@ -52,9 +52,8 @@ Pay attention at "What is your first and last name?" question, here you need to 
 ```
 	$ java -jar quasar-gamecenter-1.0.1-BUILD.jar
 ```
-Server can be configured to run as service as explained [here](https://github.com/Liviuss76/QuasarGC/wiki/Running%20QuasarGC%20as%20Service%20on%20Linux)
-
-Server should start and listen at port 8443/HTTPS. Admin control panel can be accessed at https://[YOUR IP HERE]:8443/  
+or it can be configured to run as service as explained [here](https://github.com/Liviuss76/QuasarGC/wiki/Running%20QuasarGC%20as%20Service%20on%20Linux)
+10. Server should start and listen at port 8443/HTTPS. Admin control panel can be accessed at https://[YOUR IP HERE]:8443/  use username:admin password:admin to login.
 
 Configuration  
 ======== 
@@ -83,8 +82,33 @@ All server configurations can be found in application.properties file.
 	#block IP for N minutes after login.retrybeforeblock of failed logins 
 	login.timetoblock : 2
 ```
+  
+REST API  
+======== 
+###### http://YOUR SERVER/api/scores  
+Notes: Get all scores for a specific leaderboard  
+RequestMethod: GET  
+RequestParam: String "leaderboard"  
+Security: Basic Auth  
+Answer:
+```
+ {
+  "objectContainer":[
+ 	{
+ 	 "playerUsername":"Player",
+ 	 "PlayerDisplayName":"Player Name",
+ 	 "PlayerScore":2219,
+ 	 "PlayerRank":1,
+ 	 "PlayerPlatform":"ANDROID",
+ 	 "ScoresCount":0
+ 	 }
+  ],
+  "ErrorInfo":null
+ }
+ ```
 
 
+  
 Build from source 
 ========
 ###### Build with Maven
