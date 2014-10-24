@@ -63,7 +63,7 @@ public class LeaderboardController {
 			if (size == null)
 				size = 10;
 
-			AllScoresResponse ps = scoreService.requestAllScores(UUID.fromString(leaderboardid), page, size);
+			AllScoresResponse ps = scoreService.getAllScores(UUID.fromString(leaderboardid), page, size);
 			rre.setObjectContainer(ps.getPlayerScores());
 		} else {
 			throw new Exception("Scores table not found.");
@@ -80,8 +80,8 @@ public class LeaderboardController {
 		RestResponse rre = new RestResponse();
 
 		if (leaderboardid != null) {
-			PlayerScoreResponse details = scoreService.requestPlayerScore(UUID.fromString(leaderboardid));
-			details.setScoresCount(scoreService.requestTotalScoresCount(UUID.fromString(leaderboardid)));
+			PlayerScoreResponse details = scoreService.getPlayerScore(UUID.fromString(leaderboardid));
+			details.setScoresCount(scoreService.getScoresCount(UUID.fromString(leaderboardid)));
 			rre.setObjectContainer(details);
 		} else {
 			throw new Exception("Score not found.");

@@ -1,6 +1,8 @@
 package com.nakedquasar.gamecenter.core.services.impl;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -21,7 +23,6 @@ import com.nakedquasar.gamecenter.core.domain.Player;
 import com.nakedquasar.gamecenter.core.domain.PlayerLog;
 import com.nakedquasar.gamecenter.core.domain.PlayerScore;
 import com.nakedquasar.gamecenter.core.domain.PlayerScoreKey;
-import com.nakedquasar.gamecenter.core.domain.PlayerScoreRank;
 import com.nakedquasar.gamecenter.core.services.LeaderboardService;
 import com.nakedquasar.gamecenter.mvc.dto.LeaderboardDto;
 import com.nakedquasar.gamecenter.persistence.repository.GamesRepository;
@@ -29,16 +30,12 @@ import com.nakedquasar.gamecenter.persistence.repository.LeaderboardsRepository;
 import com.nakedquasar.gamecenter.persistence.repository.PlayersLogsRepository;
 import com.nakedquasar.gamecenter.persistence.repository.PlayersRepository;
 import com.nakedquasar.gamecenter.persistence.repository.PlayersScoresRepository;
-import com.nakedquasar.gamecenter.persistence.repository.RankedPlayersScoresRepository;
 import com.nakedquasar.gamecenter.rest.controller.beans.AllScoresResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerScoreResponse;
 
 @Repository
 @Transactional
 public class LeaderboardServiceImpl implements LeaderboardService {
-
-	@Autowired
-	public RankedPlayersScoresRepository rankedScoresRepository;
 	@Autowired
 	public PlayersScoresRepository scoresRepository;
 	@Autowired
@@ -51,27 +48,42 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 	public PlayersLogsRepository playerLogRepository;
 
 	@Transactional
-	public AllScoresResponse requestAllScores(UUID leaderboardId, int page, int size) {
+	public AllScoresResponse getAllScores(UUID leaderboardId, int page, int size) {
 		Pageable topTen = new PageRequest(page, size);
-		AllScoresResponse apsr = new AllScoresResponse(
-				rankedScoresRepository.findByLeaderboardId(leaderboardId, topTen));
 
-		int scoresCount = requestTotalScoresCount(leaderboardId);
-		
-		for(PlayerScoreResponse psresp: apsr.getPlayerScores()){
-			psresp.setScoresCount(scoresCount);
+		AllScoresResponse apsr = new AllScoresResponse();
+
+		int scoresCount = getScoresCount(leaderboardId);
+
+		if (scoresCount > 0) {
+			List<PlayerScoreResponse> playerScoreResponses = new ArrayList<PlayerScoreResponse>();
+			List<PlayerScore> playerScores = scoresRepository.findByLeaderboardId(leaderboardId, topTen);
+
+			int i = 1;
+			for (PlayerScore playerScore : playerScores) {
+				PlayerScoreResponse playerScoreResponse = new PlayerScoreResponse();
+				playerScoreResponse.setPlayerDisplayName(playerScore.getId().getPlayer().getPlayerDisplayName());
+				playerScoreResponse.setPlatform(playerScore.getId().getPlayer().getPlayerPlatform());
+				playerScoreResponse.setPlayerScore(playerScore.getScore());
+				playerScoreResponse.setPlayerRank((page * size) + i);
+				playerScoreResponse.setScoresCount(scoresCount);
+				i++;
+				playerScoreResponses.add(playerScoreResponse);
+			}
+
+			apsr.setPlayerScores(playerScoreResponses);
 		}
-		
+
 		return apsr;
 	}
 
 	@Transactional
-	public int requestTotalScoresCount(UUID leaderboardId) {
-		return rankedScoresRepository.getCountScoresForLeaderboardId(leaderboardId);
+	public int getScoresCount(UUID leaderboardId) {
+		return scoresRepository.getCountScoresForLeaderboardId(leaderboardId);
 	}
 
 	@Transactional
-	public PlayerScoreResponse requestPlayerScore(UUID leaderboardId) throws Exception {
+	public PlayerScoreResponse getPlayerScore(UUID leaderboardId) throws Exception {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Player player;
 		if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
@@ -81,11 +93,14 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 			throw new Exception("Player does not exist.");
 		}
 
-		PlayerScoreRank psrank = rankedScoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
-		if (psrank != null) {
-			return new PlayerScoreResponse(psrank);
+		int scoresCount = getScoresCount(leaderboardId);
+		PlayerScore playerScore = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
+		if (playerScore != null) {
+			int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), playerScore.getScore(), playerRank,
+					player.getPlayerPlatform(), scoresCount);
 		} else {
-			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform());
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform(), scoresCount);
 		}
 	}
 
@@ -115,6 +130,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 		plog.setIp(ip);
 		playerLogRepository.saveAndFlush(plog);
 
+		int scoresCount = getScoresCount(leaderboardId)+1;
 		PlayerScore ps = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
 
 		if (ps == null) {
@@ -125,20 +141,28 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 			ps.setId(psk);
 			ps.setScore(playerScore);
 			scoresRepository.saveAndFlush(ps);
-			psr = new PlayerScoreResponse(rankedScoresRepository.findByPlayerScoreKey(leaderboardId,
-					player.getPlayerId()));
+
+			PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
+			int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
+			psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
+					player.getPlayerPlatform(), scoresCount);
+
 		} else {
 			if (!ps.getId().getPlayer().isPlayerEnabled()) {
 				// If player blocked, return existing score but rank to 0
 				psr = new PlayerScoreResponse(ps.getId().getPlayer().getPlayerDisplayName(), ps.getScore(), 0, ps
-						.getId().getPlayer().getPlayerPlatform());
+						.getId().getPlayer().getPlayerPlatform(), scoresCount);
 			} else {
 				if (playerScore < ps.getId().getLeaderboard().getLeaderboardMinSubmitValue()
 						|| playerScore > ps.getId().getLeaderboard().getLeaderboardMaxSubmitValue()) {
 					// Hack atempt? Do not increment score, just return existing
 					// value.
-					psr = new PlayerScoreResponse(rankedScoresRepository.findByPlayerScoreKey(leaderboardId,
-							player.getPlayerId()));
+					PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId,
+							player.getPlayerId());
+					int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
+					psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
+							player.getPlayerPlatform(), scoresCount);
+
 				} else {
 					if (ps.getId().getLeaderboard().isLeaderboardScoreIncrement()) {
 						// Get existing score and increment it with new score
@@ -152,8 +176,10 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 					scoresRepository.saveAndFlush(ps);
 				}
 
-				psr = new PlayerScoreResponse(rankedScoresRepository.findByPlayerScoreKey(leaderboardId,
-						player.getPlayerId()));
+				PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
+				int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
+				psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
+						player.getPlayerPlatform(), scoresCount);
 			}
 		}
 
@@ -164,7 +190,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 	public Page<LeaderBoard> getAllLeaderboards(Pageable pageable) {
 		Page<LeaderBoard> leaderboardsList = leaderboardRepository.findAllLeaderboards(pageable);
 		for (LeaderBoard lb : leaderboardsList) {
-			lb.setScoresCount(requestTotalScoresCount(lb.getLeaderboardId()));
+			lb.setScoresCount(getScoresCount(lb.getLeaderboardId()));
 		}
 
 		return leaderboardsList;
@@ -174,7 +200,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 	public Page<LeaderBoard> getAllLeaderboardsByGameId(Pageable pageable, UUID gameId) {
 		Page<LeaderBoard> leaderboardsList = leaderboardRepository.findAllLeaderboardsByGameId(pageable, gameId);
 		for (LeaderBoard lb : leaderboardsList) {
-			lb.setScoresCount(requestTotalScoresCount(lb.getLeaderboardId()));
+			lb.setScoresCount(getScoresCount(lb.getLeaderboardId()));
 		}
 
 		return leaderboardsList;
@@ -220,13 +246,17 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 	}
 
 	@Override
-	public Page<PlayerScoreRank> getPlayerLeaderboards(Pageable pageable, UUID playerId) {
+	public Page<PlayerScore> getPlayerLeaderboards(Pageable pageable, UUID playerId) {
 		Player player = playerRepository.findOne(playerId);
-		return rankedScoresRepository.findByPlayerId(player.getPlayerId(), pageable);
+		return scoresRepository.findByPlayerId(player.getPlayerId(), pageable);
 	}
 
 	@Override
 	public int getPlayerLeaderboardsCount(UUID playerId) {
-		return rankedScoresRepository.getCountLeaderboardsForPlayerId(playerId);
+		return scoresRepository.getCountLeaderboardsForPlayerId(playerId);
+	}
+
+	public int getPlayerRank(UUID leaderboardId, UUID playerId) {
+		return scoresRepository.getPlayerRank(leaderboardId.toString(), playerId.toString());
 	}
 }

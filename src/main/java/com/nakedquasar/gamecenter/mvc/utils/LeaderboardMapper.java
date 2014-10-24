@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nakedquasar.gamecenter.core.domain.LeaderBoard;
-import com.nakedquasar.gamecenter.core.domain.PlayerScoreRank;
+import com.nakedquasar.gamecenter.core.domain.PlayerScore;
 import com.nakedquasar.gamecenter.mvc.dto.LeaderboardDto;
 import com.nakedquasar.gamecenter.mvc.dto.PlayerLeaderboardDto;
 
@@ -23,14 +23,14 @@ public class LeaderboardMapper {
 		return dto;
 	}
 	
-	public static PlayerLeaderboardDto map(PlayerScoreRank psRank) {
+	public static PlayerLeaderboardDto map(PlayerScore psRank) {
 		PlayerLeaderboardDto plDto = new PlayerLeaderboardDto();
-		plDto.setGameId(psRank.getLeaderboard().getGame().getGameId());
-		plDto.setGameName(psRank.getLeaderboard().getGame().getGameName());
-		plDto.setGameImage(psRank.getLeaderboard().getGame().getGameImage());
-		plDto.setLeaderboardId(psRank.getLeaderboard().getLeaderboardId());
-		plDto.setLeaderboardName(psRank.getLeaderboard().getLeaderboardName());
-		plDto.setLeaderBoardImage(psRank.getLeaderboard().getLeaderBoardImage());
+		plDto.setGameId(psRank.getId().getLeaderboard().getGame().getGameId());
+		plDto.setGameName(psRank.getId().getLeaderboard().getGame().getGameName());
+		plDto.setGameImage(psRank.getId().getLeaderboard().getGame().getGameImage());
+		plDto.setLeaderboardId(psRank.getId().getLeaderboard().getLeaderboardId());
+		plDto.setLeaderboardName(psRank.getId().getLeaderboard().getLeaderboardName());
+		plDto.setLeaderBoardImage(psRank.getId().getLeaderboard().getLeaderBoardImage());
 		plDto.setCurrentScore(psRank.getScore());
 		plDto.setCurrentRank(psRank.getRank());
 		return plDto;
@@ -44,9 +44,9 @@ public class LeaderboardMapper {
 		return dtos;
 	}
 	
-	public static List<PlayerLeaderboardDto> mapPlayerScoreRanks(List<PlayerScoreRank> psRanks) {
+	public static List<PlayerLeaderboardDto> mapPlayerScoreRanks(List<PlayerScore> psRanks) {
 		List<PlayerLeaderboardDto> plDtos = new ArrayList<PlayerLeaderboardDto>();
-		for(PlayerScoreRank psRank : psRanks){
+		for(PlayerScore psRank : psRanks){
 			
 			plDtos.add(map(psRank));
 		}

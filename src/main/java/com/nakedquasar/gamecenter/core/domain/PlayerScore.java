@@ -3,6 +3,7 @@ package com.nakedquasar.gamecenter.core.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity(name = "PlayerScore")
 @Table(name = "playerscore")
@@ -12,6 +13,9 @@ public class PlayerScore extends BaseEntity<PlayerScoreKey> {
 	@Column(name = "score")
 	private int score;
 
+	@Transient
+	private int rank;
+	
 	public int getScore() {
 		return score;
 	}
@@ -25,4 +29,11 @@ public class PlayerScore extends BaseEntity<PlayerScoreKey> {
 		super.setId(id);
 	}
 
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
 }

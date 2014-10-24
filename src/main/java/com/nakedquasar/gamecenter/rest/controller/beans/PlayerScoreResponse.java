@@ -2,7 +2,6 @@ package com.nakedquasar.gamecenter.rest.controller.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nakedquasar.gamecenter.core.domain.PlayerScoreRank;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlayerScoreResponse {
@@ -24,18 +23,12 @@ public class PlayerScoreResponse {
 	public PlayerScoreResponse() {
 	}
 	
-	public PlayerScoreResponse(PlayerScoreRank dbPlayerScore) {
-		setPlayerDisplayName(dbPlayerScore.getPlayer().getPlayerDisplayName());
-		setPlayerScore(dbPlayerScore.getScore());
-		setPlayerRank(dbPlayerScore.getRank());
-		setPlatform(dbPlayerScore.getPlatform());
-	}
-	
-	public PlayerScoreResponse(String displayname, int score, int rank, String platform) {
+	public PlayerScoreResponse(String displayname, int score, int rank, String platform, int scoresCount) {
 		setPlayerDisplayName(displayname);
 		setPlayerScore(score);
 		setPlayerRank(rank);
 		setPlatform(platform);
+		setScoresCount(scoresCount);
 	}
 
 	public String getPlayerUsername() {

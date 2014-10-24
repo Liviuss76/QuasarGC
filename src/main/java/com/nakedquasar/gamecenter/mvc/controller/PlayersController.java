@@ -26,7 +26,7 @@ import com.nakedquasar.gamecenter.config.UtilsService;
 import com.nakedquasar.gamecenter.core.domain.Player;
 import com.nakedquasar.gamecenter.core.domain.PlayerAchievement;
 import com.nakedquasar.gamecenter.core.domain.PlayerLog;
-import com.nakedquasar.gamecenter.core.domain.PlayerScoreRank;
+import com.nakedquasar.gamecenter.core.domain.PlayerScore;
 import com.nakedquasar.gamecenter.core.services.AchievementService;
 import com.nakedquasar.gamecenter.core.services.GameService;
 import com.nakedquasar.gamecenter.core.services.LeaderboardService;
@@ -216,7 +216,7 @@ public class PlayersController {
 
 		PlayerDto playerDto = (PlayerDto) session.getAttribute("playerForm");
 
-		PageWrapper<PlayerScoreRank> page = new PageWrapper<PlayerScoreRank>(leaderboardService.getPlayerLeaderboards(
+		PageWrapper<PlayerScore> page = new PageWrapper<PlayerScore>(leaderboardService.getPlayerLeaderboards(
 				pageable, playerDto.getPlayerId()), "/players/playerleaderboards");
 		model.addAttribute("leaderboards", LeaderboardMapper.mapPlayerScoreRanks(page.getContent()));
 		model.addAttribute("playerForm", playerDto);
