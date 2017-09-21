@@ -102,7 +102,8 @@ Answer:
  	 	"PlayerBirthdate":"PlayerBirthdate",
  	 	"PlayerSex":"PlayerSex",
  	 	"PlayerBlocked":False,
- 	 	"PlayerPicture":"PlayerPicture"
+ 	 	"PlayerPicture":"PlayerPicture",
+ 	 	"PlayerProfile":"PlayerProfile"
 	},
 	"ErrorInfo":{
 		"ErrorMessage":"ErrorMessage"
@@ -129,7 +130,8 @@ Post Object:
 	"PlayerSex":"PlayerSex",
 	"PlayerBlocked":False,
 	"PlayerPlatform":"PlayerPlatform",
-	"PlayerPicture":"PlayerPicture"
+	"PlayerPicture":"PlayerPicture",
+	"PlayerProfile":"PlayerProfile"
 }
  ```
 Answer:
@@ -145,7 +147,8 @@ Answer:
  	 	"PlayerBirthdate":"PlayerBirthdate",
  	 	"PlayerSex":"PlayerSex",
  	 	"PlayerBlocked":False,
- 	 	"PlayerPicture":"PlayerPicture"
+ 	 	"PlayerPicture":"PlayerPicture",
+ 	 	"PlayerProfile":"PlayerProfile"
 	},
 	"ErrorInfo":{
 		"ErrorMessage":"ErrorMessage"
@@ -170,7 +173,8 @@ Post Object:
 	"PlayerSex":"PlayerSex",
 	"PlayerBlocked":False,
 	"PlayerPlatform":"PlayerPlatform",
-	"PlayerPicture":"PlayerPicture"
+	"PlayerPicture":"PlayerPicture",
+	"PlayerProfile":"PlayerProfile"
 }
  ```
 Answer:
@@ -211,7 +215,8 @@ Answer:
  	 	"PlayerScore":2219,
  	 	"PlayerRank":1,
  	 	"PlayerPlatform":"ANDROID",
- 	 	"ScoresCount":2
+ 	 	"ScoresCount":2,
+ 	 	"PlayerPicture":"EncodedBase64"
 	}],
 	"ErrorInfo":{
 		"ErrorMessage":"ErrorMessage"
@@ -234,7 +239,9 @@ Answer:
 		"PlayerScore":1219,
 		"PlayerRank":2,
 		"PlayerPlatform":"MAC",
-		"ScoresCount":2
+		"ScoresCount":2,
+ 	 	"PlayerPicture":"EncodedBase64"
+		
 	},
 	"ErrorInfo":{
 		"ErrorMessage":"ErrorMessage"
@@ -263,7 +270,8 @@ Answer:
 		"PlayerScore":1219,
 		"PlayerRank":2,
 		"PlayerPlatform":"MAC",
-		"ScoresCount":2
+		"ScoresCount":2,
+ 	 	"PlayerPicture":"EncodedBase64"
 	},
 	"ErrorInfo":{
 		"ErrorMessage":"ErrorMessage"
