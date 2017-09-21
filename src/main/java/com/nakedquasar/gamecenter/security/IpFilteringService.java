@@ -26,24 +26,25 @@ public class IpFilteringService {
 	public IpFilteringService() {
 		loginAttempts = new HashMap<String, BlockedUser>();
 	}
-	
-	
 
 	public boolean isIpBlocked(String address) {
-
-		if(blockedipsRepository.getIp(address) > 0)
-			return true;
-		
 		if (loginAttempts.containsKey(address) && loginAttempts.get(address).isIpBlocked()) {
 			if (loginAttempts.get(address).getRemainingTime(new Date(), timeToBlock) <= 0) {
 				loginAttempts.remove(address);
-				return false;
 			} else {
 				return true;
 			}
-
 		}
+
+		if (blockedipsRepository.getIp(address) > 0) {
+			return true;
+		}
+
 		return false;
+	}
+
+	public void removeIpFromBlock(String address) {
+		loginAttempts.remove(address);
 	}
 
 	public void addFailedLogin(String address) {

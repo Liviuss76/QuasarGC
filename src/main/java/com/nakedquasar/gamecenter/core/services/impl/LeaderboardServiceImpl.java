@@ -67,6 +67,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 				playerScoreResponse.setPlayerScore(playerScore.getScore());
 				playerScoreResponse.setPlayerRank((page * size) + i);
 				playerScoreResponse.setScoresCount(scoresCount);
+				playerScoreResponse.setPlayerPicture(playerScore.getId().getPlayer().getPlayerPicture());
 				i++;
 				playerScoreResponses.add(playerScoreResponse);
 			}
@@ -98,9 +99,9 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 		if (playerScore != null) {
 			int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
 			return new PlayerScoreResponse(player.getPlayerDisplayName(), playerScore.getScore(), playerRank,
-					player.getPlayerPlatform(), scoresCount);
+					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
 		} else {
-			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform(), scoresCount);
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
 		}
 	}
 
@@ -145,13 +146,13 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 			PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
 			int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
 			psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-					player.getPlayerPlatform(), scoresCount);
+					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
 
 		} else {
 			if (!ps.getId().getPlayer().isPlayerEnabled()) {
 				// If player blocked, return existing score but rank to 0
 				psr = new PlayerScoreResponse(ps.getId().getPlayer().getPlayerDisplayName(), ps.getScore(), 0, ps
-						.getId().getPlayer().getPlayerPlatform(), scoresCount);
+						.getId().getPlayer().getPlayerPlatform(), scoresCount, ps.getId().getPlayer().getPlayerPicture());
 			} else {
 				if (playerScore < ps.getId().getLeaderboard().getLeaderboardMinSubmitValue()
 						|| playerScore > ps.getId().getLeaderboard().getLeaderboardMaxSubmitValue()) {
@@ -161,7 +162,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 							player.getPlayerId());
 					int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
 					psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-							player.getPlayerPlatform(), scoresCount);
+							player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
 
 				} else {
 					if (ps.getId().getLeaderboard().isLeaderboardScoreIncrement()) {
@@ -179,7 +180,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 				PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
 				int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
 				psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-						player.getPlayerPlatform(), scoresCount);
+						player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
 			}
 		}
 

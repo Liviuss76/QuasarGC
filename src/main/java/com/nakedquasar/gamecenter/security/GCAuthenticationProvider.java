@@ -19,32 +19,32 @@ public class GCAuthenticationProvider extends DaoAuthenticationProvider {
 	@Qualifier("userDetailsService")
 	@Override
 	public void setUserDetailsService(UserDetailsService userDetailsService) {
-		super.setPasswordEncoder(new StandardPasswordEncoder() );
+		super.setPasswordEncoder(new StandardPasswordEncoder());
 		super.setUserDetailsService(userDetailsService);
 	}
-	
+
 	@Autowired
 	IpFilteringService ipFiltering;
-	
+
 	@Override
-	public Authentication authenticate(Authentication authentication)
-			throws AuthenticationException {
-		WebAuthenticationDetails wad = (WebAuthenticationDetails)authentication.getDetails();
-		
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		WebAuthenticationDetails wad = (WebAuthenticationDetails) authentication.getDetails();
+
 		try {
-			if(ipFiltering.isIpBlocked(wad.getRemoteAddress())){
-				throw new InsufficientAuthenticationException("IP Blacklisted");	
+			if (ipFiltering.isIpBlocked(wad.getRemoteAddress())) {
+				throw new InsufficientAuthenticationException("IP Blacklisted");
 			}
+
+			ipFiltering.removeIpFromBlock(wad.getRemoteAddress());
 			Authentication auth = super.authenticate(authentication);
 			return auth;
 
 		} catch (BadCredentialsException e) {
 			ipFiltering.addFailedLogin(wad.getRemoteAddress());
 			throw e;
-		}catch (AuthenticationException e){
+		} catch (AuthenticationException e) {
 			throw e;
 		}
-
 	}
 
 }

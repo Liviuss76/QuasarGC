@@ -24,49 +24,65 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 @ComponentScan
 @EnableAutoConfiguration
 public class CoreConfig {
-	@Value("${keystore.file}") private String keystoreFile;
-	@Value("${keystore.pass}") private String keystorePass;
-	@Value("${keystore.type}") private String keystoreType;
-	@Value("${keystore.alias}") private String keystoreAlias;
-	@Value("${server.port}") private int serverPort;
-	
+	@Value("${keystore.file}")
+	private String keystoreFile;
+	@Value("${keystore.pass}")
+	private String keystorePass;
+	@Value("${keystore.type}")
+	private String keystoreType;
+	@Value("${keystore.alias}")
+	private String keystoreAlias;
+	@Value("${server.port}")
+	private int serverPort;
+
 	@Bean
-	   public MultipartResolver multipartResolver() {
-	   CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-	   multipartResolver.setMaxUploadSize(100000000);
-	   return multipartResolver;
+	public MultipartResolver multipartResolver() {
+		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+		multipartResolver.setMaxUploadSize(100000000);
+		return multipartResolver;
 	}
-	
+
 	@Bean
-	public EmbeddedServletContainerCustomizer containerCustomizer()  throws FileNotFoundException {
+	public EmbeddedServletContainerCustomizer containerCustomizer() throws FileNotFoundException {
 		final String absoluteKeystoreFile = ResourceUtils.getFile(keystoreFile).getAbsolutePath();
 
 		return new EmbeddedServletContainerCustomizer() {
 			@Override
-			public void customize(	ConfigurableEmbeddedServletContainer factory) {
+			public void customize(ConfigurableEmbeddedServletContainer factory) {
 				if (factory instanceof TomcatEmbeddedServletContainerFactory) {
 					TomcatEmbeddedServletContainerFactory containerFactory = (TomcatEmbeddedServletContainerFactory) factory;
 					containerFactory.addConnectorCustomizers(new TomcatConnectorCustomizer() {
-							@Override
-							public void customize(Connector connector) {
-								connector.setPort(serverPort);
-								connector.setSecure(true);
-								connector.setScheme("https");
-								Http11NioProtocol proto = (Http11NioProtocol) connector.getProtocolHandler();
-					            proto.setSSLEnabled(true);
-					            proto.setKeystoreFile(absoluteKeystoreFile);
-					            proto.setKeystorePass(keystorePass);
-					            proto.setKeystoreType(keystoreType);
-					            proto.setKeyAlias(keystoreAlias);
-							}
-						});
+						@Override
+						public void customize(Connector connector) {
+							connector.setPort(serverPort);
+							connector.setSecure(true);
+							connector.setScheme("https");
+							Http11NioProtocol proto = (Http11NioProtocol) connector.getProtocolHandler();
+							proto.setSSLEnabled(true);
+							proto.setKeystoreFile(absoluteKeystoreFile);
+							proto.setKeystorePass(keystorePass);
+							proto.setKeystoreType(keystoreType);
+							proto.setKeyAlias(keystoreAlias);
+						}
+					});
+					containerFactory.addAdditionalTomcatConnectors(createNoSslConnector());
 					containerFactory.setSessionTimeout(10, TimeUnit.MINUTES);
 					ErrorPage error401Page = new ErrorPage(HttpStatus.UNAUTHORIZED, "/errors/unauthorised");
 					ErrorPage error403Page = new ErrorPage(HttpStatus.FORBIDDEN, "/errors/unauthorised");
-		            ErrorPage error404Page = new ErrorPage(HttpStatus.NOT_FOUND, "/errors/resourcenotfound");
-		            containerFactory.addErrorPages(error401Page, error403Page, error404Page);
+					ErrorPage error404Page = new ErrorPage(HttpStatus.NOT_FOUND, "/errors/resourcenotfound");
+					containerFactory.addErrorPages(error401Page, error403Page, error404Page);
 				}
 			}
 		};
+	}
+
+	private Connector createNoSslConnector() {
+		Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+		Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
+		connector.setScheme("http");
+		connector.setSecure(false);
+		connector.setPort(8080);
+		protocol.setSSLEnabled(false);
+		return connector;
 	}
 }

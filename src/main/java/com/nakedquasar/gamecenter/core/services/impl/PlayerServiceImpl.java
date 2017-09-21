@@ -79,6 +79,8 @@ public class PlayerServiceImpl implements PlayerService {
 				pl.setPlayerPicture(player.getPlayerPictureDefault());
 			}
 
+			pl.setPlayerprofile(player.getPlayerProfile());
+			
 			pl = playerRepository.saveAndFlush(pl);
 
 			PlayerLog plog = new PlayerLog();
@@ -128,6 +130,8 @@ public class PlayerServiceImpl implements PlayerService {
 			if (playerSubmit.getPlayerPicture() != null && !playerSubmit.getPlayerPicture().trim().isEmpty()) {
 				player.setPlayerPicture(playerSubmit.getPlayerPicture());
 			}
+			
+			player.setPlayerprofile(playerSubmit.getPlayerProfile());
 
 			player = playerRepository.saveAndFlush(player);
 
@@ -175,6 +179,7 @@ public class PlayerServiceImpl implements PlayerService {
 			pl.setPlayerEnabled(playerDto.isPlayerEnabled());
 			pl.setDateTimeOfCreation(new Date(new java.util.Date().getTime()));
 			pl.setIp(playerDto.getIp());
+			pl.setPlayerprofile(playerDto.getPlayerProfile());
 		} else {
 			throw new Exception("Username in use");
 		}
@@ -207,6 +212,7 @@ public class PlayerServiceImpl implements PlayerService {
 			pl.setPlayerPlatform(playerDto.getPlayerPlatform());
 			pl.setPlayerRole("ROLE_USER");
 			pl.setPlayerEnabled(playerDto.isPlayerEnabled());
+			pl.setPlayerprofile(playerDto.getPlayerProfile());
 		}
 
 		return playerRepository.saveAndFlush(pl);

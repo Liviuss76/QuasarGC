@@ -20,15 +20,19 @@ public class PlayerScoreResponse {
 	@JsonProperty("ScoresCount")
 	private int scoresCount;
 	
+	@JsonProperty("PlayerPicture")
+	private String playerPicture;
+	
 	public PlayerScoreResponse() {
 	}
 	
-	public PlayerScoreResponse(String displayname, int score, int rank, String platform, int scoresCount) {
+	public PlayerScoreResponse(String displayname, int score, int rank, String platform, int scoresCount, String playerPicture) {
 		setPlayerDisplayName(displayname);
 		setPlayerScore(score);
 		setPlayerRank(rank);
 		setPlatform(platform);
 		setScoresCount(scoresCount);
+		setPlayerPicture(playerPicture);
 	}
 
 	public String getPlayerUsername() {
@@ -69,6 +73,14 @@ public class PlayerScoreResponse {
 
 	public void setScoresCount(int scoresCount) {
 		this.scoresCount = scoresCount;
+	}
+	
+	public String getPlayerPicture() {
+		return playerPicture;
+	}
+
+	public void setPlayerPicture(String playerPicture) {
+		this.playerPicture = playerPicture;
 	}
 
 }

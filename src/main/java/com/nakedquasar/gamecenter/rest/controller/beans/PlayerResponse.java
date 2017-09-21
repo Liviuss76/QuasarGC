@@ -40,6 +40,9 @@ public class PlayerResponse {
 
 	@JsonProperty("PlayerPicture")
 	private String playerPicture;
+	
+	@JsonProperty("PlayerProfile")
+	private String playerProfile;
 
 	public PlayerResponse() {
 	}
@@ -55,6 +58,7 @@ public class PlayerResponse {
 		setPlayerSex(dbPlayer.getPlayerSex());
 		setPlayerBlocked(!dbPlayer.isPlayerEnabled());
 		setPlayerPicture(dbPlayer.getPlayerPicture());
+		setPlayerProfile(dbPlayer.getPlayerprofile());
 	}
 
 	public UUID getPlayerId() {
@@ -139,6 +143,14 @@ public class PlayerResponse {
 
 	public void setPlayerPicture(String playerPicture) {
 		this.playerPicture = playerPicture;
+	}
+	
+	public String getPlayerProfile() {
+		return playerProfile;
+	}
+	
+	public void setPlayerProfile(String playerProfile) {
+		this.playerProfile = playerProfile;
 	}
 
 }
