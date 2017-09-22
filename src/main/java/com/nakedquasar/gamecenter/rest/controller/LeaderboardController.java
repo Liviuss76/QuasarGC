@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,7 @@ import com.nakedquasar.gamecenter.rest.controller.beans.RestResponse;
 import com.nakedquasar.gamecenter.rest.controller.errors.ErrorInfo;
 
 @Controller
+//@CrossOrigin(origins = {"https://localhost:", "http://localhost:8080", "http://localhost:8080"})
 @RequestMapping("/api")
 public class LeaderboardController {
 	@Autowired

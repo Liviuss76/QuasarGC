@@ -31,7 +31,9 @@ public class SecurityConfig {
 		}
 		
 		protected void configure(HttpSecurity http) throws Exception {
-        	http.sessionManagement()
+        	http.cors().
+        	and().
+        	sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .csrf().disable().antMatcher("/api/**").authorizeRequests()
 			.antMatchers("/api/register", "/api/ping","/errors/").permitAll()
