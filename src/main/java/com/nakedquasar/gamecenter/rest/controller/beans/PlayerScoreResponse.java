@@ -23,6 +23,9 @@ public class PlayerScoreResponse {
 	@JsonProperty("PlayerPicture")
 	private String playerPicture;
 	
+	@JsonProperty("LeaderboardId")
+	private String leaderboardId;
+	
 	public PlayerScoreResponse() {
 	}
 	
@@ -33,8 +36,19 @@ public class PlayerScoreResponse {
 		setPlatform(platform);
 		setScoresCount(scoresCount);
 		setPlayerPicture(playerPicture);
+		leaderboardId = "";
 	}
 
+	public PlayerScoreResponse(String displayname, int score, int rank, String platform, int scoresCount, String playerPicture, String leaderboardId) {
+		setPlayerDisplayName(displayname);
+		setPlayerScore(score);
+		setPlayerRank(rank);
+		setPlatform(platform);
+		setScoresCount(scoresCount);
+		setPlayerPicture(playerPicture);
+		setLeaderboardId(leaderboardId);
+	}
+	
 	public String getPlayerUsername() {
 		return playerDisplayName;
 	}
@@ -83,4 +97,11 @@ public class PlayerScoreResponse {
 		this.playerPicture = playerPicture;
 	}
 
+	public String getLeaderboardId() {
+		return leaderboardId;
+	}
+
+	public void setLeaderboardId(String leaderboardId) {
+		this.leaderboardId = leaderboardId;
+	}
 }

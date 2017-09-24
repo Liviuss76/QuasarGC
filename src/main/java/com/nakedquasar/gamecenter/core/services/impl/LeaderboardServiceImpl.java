@@ -60,6 +60,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 			List<PlayerScore> playerScores = scoresRepository.findByLeaderboardId(leaderboardId, topTen);
 
 			int i = 1;
+			int j=0;
 			for (PlayerScore playerScore : playerScores) {
 				PlayerScoreResponse playerScoreResponse = new PlayerScoreResponse();
 				playerScoreResponse.setPlayerDisplayName(playerScore.getId().getPlayer().getPlayerDisplayName());
@@ -68,6 +69,12 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 				playerScoreResponse.setPlayerRank((page * size) + i);
 				playerScoreResponse.setScoresCount(scoresCount);
 				playerScoreResponse.setPlayerPicture(playerScore.getId().getPlayer().getPlayerPicture());
+				if(j==0){
+					playerScoreResponse.setLeaderboardId(leaderboardId.toString());
+					j++;
+				}else{
+					playerScoreResponse.setLeaderboardId("");
+				}
 				i++;
 				playerScoreResponses.add(playerScoreResponse);
 			}
@@ -99,9 +106,9 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 		if (playerScore != null) {
 			int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
 			return new PlayerScoreResponse(player.getPlayerDisplayName(), playerScore.getScore(), playerRank,
-					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
+					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
 		} else {
-			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
 		}
 	}
 
@@ -146,13 +153,13 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 			PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
 			int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
 			psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
+					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
 
 		} else {
 			if (!ps.getId().getPlayer().isPlayerEnabled()) {
 				// If player blocked, return existing score but rank to 0
 				psr = new PlayerScoreResponse(ps.getId().getPlayer().getPlayerDisplayName(), ps.getScore(), 0, ps
-						.getId().getPlayer().getPlayerPlatform(), scoresCount, ps.getId().getPlayer().getPlayerPicture());
+						.getId().getPlayer().getPlayerPlatform(), scoresCount, ps.getId().getPlayer().getPlayerPicture(),leaderboardId.toString());
 			} else {
 				if (playerScore < ps.getId().getLeaderboard().getLeaderboardMinSubmitValue()
 						|| playerScore > ps.getId().getLeaderboard().getLeaderboardMaxSubmitValue()) {
@@ -162,7 +169,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 							player.getPlayerId());
 					int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
 					psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-							player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
+							player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
 
 				} else {
 					if (ps.getId().getLeaderboard().isLeaderboardScoreIncrement()) {
@@ -180,7 +187,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 				PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
 				int playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
 				psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-						player.getPlayerPlatform(), scoresCount, player.getPlayerPicture());
+						player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
 			}
 		}
 
