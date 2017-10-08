@@ -36,7 +36,7 @@ public class SecurityConfig {
         	sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .csrf().disable().antMatcher("/api/**").authorizeRequests()
-			.antMatchers("/api/register", "/api/ping","/errors/","/iap").permitAll()
+			.antMatchers("/api/register", "/api/ping","/errors/","/api/iap").permitAll()
 			.antMatchers("/api/**").hasAnyRole("USER","ADMIN")
             .and()
             .httpBasic();
