@@ -36,6 +36,8 @@ import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementProgres
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementProgressSubmit;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerAchievementUnlockSubmit;
+import com.nakedquasar.gamecenter.rest.controller.beans.PlayerProfileResponse;
+import com.nakedquasar.gamecenter.rest.controller.beans.PlayerProfileSubmit;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerScoreResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerScoreSubmit;
@@ -276,6 +278,46 @@ public class LeaderboardController {
 		} else {
 			throw new Exception("No achievement code specified");
 		}
+		return rre;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/profile")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public RestResponse getProfile(@RequestParam(value = "game", required = true) String gameId) throws Exception {
+		RestResponse rre = new RestResponse();
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
+			User userDetails = (User) auth.getPrincipal();
+			Player pl = playerService.getDbPlayer(userDetails.getUsername(), userDetails.getPassword());	
+			PlayerProfileResponse pr = playerService.getPlayerProfile(pl.getPlayerId(), UUID.fromString(gameId));
+			rre.setObjectContainer(pr);
+		} else {
+			throw new Exception("No credentials found for player.");
+		}
+		
+		return rre;
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/profile")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public RestResponse updateProfile(@RequestBody PlayerProfileSubmit profile, HttpServletRequest request) throws Exception {
+		RestResponse rre = new RestResponse();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
+			User userDetails = (User) auth.getPrincipal();
+			Player pl = playerService.getDbPlayer(userDetails.getUsername(), userDetails.getPassword());
+			
+			PlayerProfileResponse pr = playerService.updatePlayerProfile(pl.getPlayerId(), UUID.fromString(profile.getGameId()), profile.getProfile());
+			rre.setObjectContainer(pr);
+		} else {
+			throw new Exception("No credentials found for player.");
+		}
+		
 		return rre;
 	}
 	

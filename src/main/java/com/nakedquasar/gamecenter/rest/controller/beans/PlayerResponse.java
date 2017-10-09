@@ -58,7 +58,6 @@ public class PlayerResponse {
 		setPlayerSex(dbPlayer.getPlayerSex());
 		setPlayerBlocked(!dbPlayer.isPlayerEnabled());
 		setPlayerPicture(dbPlayer.getPlayerPicture());
-		setPlayerProfile(dbPlayer.getPlayerprofile());
 	}
 
 	public UUID getPlayerId() {

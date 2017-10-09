@@ -50,7 +50,7 @@ Pay attention at "What is your first and last name?" question, here you need to 
 8. Update "application.properties" file, from the folder where executables reside (see p.4), and setup "keystore.pass" entry and "keystore.alias" entry if you changed alias for keystore.  
 9. Start the server by executing  
 ```
-	$ java -jar quasar-gamecenter-1.0.1-BUILD.jar
+	$ java -jar quasar-gamecenter-1.6.jar
 ```
 or it can be configured to run as service as explained [here](https://github.com/Liviuss76/QuasarGC/wiki/Running%20QuasarGC%20as%20Service%20on%20Linux)
 10. Server should start and listen at port 8443/HTTPS. Admin control panel can be accessed at https://[YOUR IP HERE]:8443/  use username:admin password:admin to login.
@@ -81,6 +81,17 @@ All server configurations can be found in application.properties file.
 	login.retrybeforeblock: 3
 	#block IP for N minutes after login.retrybeforeblock of failed logins 
 	login.timetoblock : 2
+	#BASE64 Keys from Google Store to check inapp purchases (up to 10 applications)
+	key1=XXX
+	key2=XXX
+	key3=XXX
+	key4=XXX
+	key5=XXX
+	key6=XXX
+	key7=XXX
+	key8=XXX
+	key9=XXX
+	key10=XXX
 ```
   
 REST Api  
@@ -103,7 +114,6 @@ Answer:
  	 	"PlayerSex":"PlayerSex",
  	 	"PlayerBlocked":False,
  	 	"PlayerPicture":"PlayerPicture",
- 	 	"PlayerProfile":"PlayerProfile"
 	},
 	"ErrorInfo":{
 		"ErrorMessage":"ErrorMessage"
@@ -130,8 +140,7 @@ Post Object:
 	"PlayerSex":"PlayerSex",
 	"PlayerBlocked":False,
 	"PlayerPlatform":"PlayerPlatform",
-	"PlayerPicture":"PlayerPicture",
-	"PlayerProfile":"PlayerProfile"
+	"PlayerPicture":"PlayerPicture"
 }
  ```
 Answer:
@@ -147,17 +156,59 @@ Answer:
  	 	"PlayerBirthdate":"PlayerBirthdate",
  	 	"PlayerSex":"PlayerSex",
  	 	"PlayerBlocked":False,
- 	 	"PlayerPicture":"PlayerPicture",
- 	 	"PlayerProfile":"PlayerProfile"
+ 	 	"PlayerPicture":"PlayerPicture"
 	},
 	"ErrorInfo":{
 		"ErrorMessage":"ErrorMessage"
 	}
 }
  ```
+ 
+ 
+ ##### http://YOUR SERVER/api/profile  
+Notes: Get Player profile  
+RequestMethod: GET  
+RequestParam: String "game" (mandatory) 
+Security: Basic Auth  
+Answer:
+```
+{
+	"objectContainer":{
+		"PlayerProfile":"PlayerProfile" (string)
+	},
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
+}
+ ```
+ 
+ 
+ ##### http://YOUR SERVER/api/profile  
+Notes: Update Player profile  
+RequestMethod: POST  
+Security: Basic Auth  
+Post Object:
+```
+{
+	"GameId":"GameId", (string)
+	"Profile":"PlayerProfile" (string)
+}
+ ```
+Answer:
+```
+{
+	"objectContainer":{
+		"PlayerProfile":"PlayerProfile" (string)
+	},
+	"ErrorInfo":{
+		"ErrorMessage":"ErrorMessage"
+	}
+}
+ ```
+ 
    
 ##### http://YOUR SERVER/api/update  
-Notes: Update Player profile  
+Notes: Update Player  
 RequestMethod: POST  
 Security: Basic Auth  
 Post Object:
@@ -173,8 +224,7 @@ Post Object:
 	"PlayerSex":"PlayerSex",
 	"PlayerBlocked":False,
 	"PlayerPlatform":"PlayerPlatform",
-	"PlayerPicture":"PlayerPicture",
-	"PlayerProfile":"PlayerProfile"
+	"PlayerPicture":"PlayerPicture"
 }
  ```
 Answer:

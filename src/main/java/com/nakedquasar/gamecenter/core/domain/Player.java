@@ -55,9 +55,6 @@ public class Player {
 	@Column(name = "playerpicture", nullable = true)
 	private String playerPicture;
 	
-	@Column(name = "playerprofile", nullable = true)
-	private String playerprofile;
-	
 	@Column(name = "playerenabled", nullable = false )
 	private boolean playerEnabled;
 	
@@ -177,14 +174,6 @@ public class Player {
 
 	public void setPlayerPicture(String playerPicture) {
 		this.playerPicture = playerPicture;
-	}
-	
-	public String getPlayerprofile() {
-		return playerprofile;
-	}
-
-	public void setPlayerprofile(String playerprofile) {
-		this.playerprofile = playerprofile;
 	}
 	
 	public String getIp() {

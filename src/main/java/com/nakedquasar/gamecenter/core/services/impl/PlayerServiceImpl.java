@@ -15,12 +15,18 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import com.nakedquasar.gamecenter.core.domain.Game;
 import com.nakedquasar.gamecenter.core.domain.Player;
 import com.nakedquasar.gamecenter.core.domain.PlayerLog;
+import com.nakedquasar.gamecenter.core.domain.PlayerProfile;
+import com.nakedquasar.gamecenter.core.domain.PlayerProfileKey;
 import com.nakedquasar.gamecenter.core.services.PlayerService;
 import com.nakedquasar.gamecenter.mvc.dto.PlayerDto;
+import com.nakedquasar.gamecenter.persistence.repository.GamesRepository;
 import com.nakedquasar.gamecenter.persistence.repository.PlayersLogsRepository;
+import com.nakedquasar.gamecenter.persistence.repository.PlayersProfilesRepository;
 import com.nakedquasar.gamecenter.persistence.repository.PlayersRepository;
+import com.nakedquasar.gamecenter.rest.controller.beans.PlayerProfileResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerSubmit;
 
@@ -31,6 +37,10 @@ public class PlayerServiceImpl implements PlayerService {
 	public PlayersRepository playerRepository;
 	@Autowired
 	public PlayersLogsRepository playerLogRepository;
+	@Autowired
+	public PlayersProfilesRepository playersProfilesRepository;
+	@Autowired
+	public GamesRepository gamesRepository;
 
 	@Override
 	public PlayerResponse getPlayer(String username, String password) throws Exception {
@@ -52,6 +62,7 @@ public class PlayerServiceImpl implements PlayerService {
 	public PlayerResponse submitPlayer(PlayerSubmit player, String ip) throws Exception {
 
 		Player pl = playerRepository.findByPlayerUsername(player.getPlayerUsername());
+
 
 		if (pl == null) {
 			pl = new Player();
@@ -79,8 +90,6 @@ public class PlayerServiceImpl implements PlayerService {
 				pl.setPlayerPicture(player.getPlayerPictureDefault());
 			}
 
-			pl.setPlayerprofile(player.getPlayerProfile());
-			
 			pl = playerRepository.saveAndFlush(pl);
 
 			PlayerLog plog = new PlayerLog();
@@ -130,8 +139,6 @@ public class PlayerServiceImpl implements PlayerService {
 			if (playerSubmit.getPlayerPicture() != null && !playerSubmit.getPlayerPicture().trim().isEmpty()) {
 				player.setPlayerPicture(playerSubmit.getPlayerPicture());
 			}
-			
-			player.setPlayerprofile(playerSubmit.getPlayerProfile());
 
 			player = playerRepository.saveAndFlush(player);
 
@@ -179,7 +186,6 @@ public class PlayerServiceImpl implements PlayerService {
 			pl.setPlayerEnabled(playerDto.isPlayerEnabled());
 			pl.setDateTimeOfCreation(new Date(new java.util.Date().getTime()));
 			pl.setIp(playerDto.getIp());
-			pl.setPlayerprofile(playerDto.getPlayerProfile());
 		} else {
 			throw new Exception("Username in use");
 		}
@@ -212,7 +218,6 @@ public class PlayerServiceImpl implements PlayerService {
 			pl.setPlayerPlatform(playerDto.getPlayerPlatform());
 			pl.setPlayerRole("ROLE_USER");
 			pl.setPlayerEnabled(playerDto.isPlayerEnabled());
-			pl.setPlayerprofile(playerDto.getPlayerProfile());
 		}
 
 		return playerRepository.saveAndFlush(pl);
@@ -250,6 +255,48 @@ public class PlayerServiceImpl implements PlayerService {
 	@Override
 	public Page<Player> getAllPlayers(Pageable pageable, String username) {
 		return playerRepository.findAllPlayers(pageable, username);
+	}
+
+	@Override
+	public PlayerProfileResponse getPlayerProfile(UUID playerId, UUID gameId) {
+		String profile = playersProfilesRepository.findByPlayerGameKey(playerId, gameId);
+		
+		if(profile == null)
+			profile = "";
+		
+		return new PlayerProfileResponse(profile);
+	}
+
+	@Override
+	public PlayerProfileResponse updatePlayerProfile(UUID playerId, UUID gameId, String profileStr) throws Exception {
+		PlayerProfile profile = playersProfilesRepository.findByKeyValues(playerId, gameId);
+		PlayerProfileResponse ppr = new PlayerProfileResponse("");
+		
+		if(profile != null){
+			profile.setProfile(profileStr);
+			playersProfilesRepository.saveAndFlush(profile);
+			ppr.setPlayerProfile(profileStr);
+		}else{
+			Game game = gamesRepository.findOne(gameId);
+			Player player = playerRepository.findByPlayerId(playerId);
+			
+			if(game != null && player != null){
+				PlayerProfileKey playerProfileKey= new PlayerProfileKey();
+				playerProfileKey.setGame(game);
+				playerProfileKey.setPlayer(player);
+				
+				PlayerProfile playerProfile = new PlayerProfile();
+				playerProfile.setId(playerProfileKey);
+				playerProfile.setProfile(profileStr);
+				
+				playersProfilesRepository.saveAndFlush(playerProfile);
+				ppr.setPlayerProfile(profileStr);
+			}else{
+					throw new Exception("Failed to update profile. Wrong userId or gameId");
+			}
+		}
+
+		return ppr;
 	}
 
 }

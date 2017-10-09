@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.nakedquasar.gamecenter.core.domain.Player;
 import com.nakedquasar.gamecenter.mvc.dto.PlayerDto;
+import com.nakedquasar.gamecenter.rest.controller.beans.PlayerProfileResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerResponse;
 import com.nakedquasar.gamecenter.rest.controller.beans.PlayerSubmit;
 
@@ -36,4 +37,8 @@ public interface PlayerService {
 	public void deletePlayer(UUID playerId) throws Exception;
 	
 	public void changePassword(String username, String password) throws Exception;
+	
+	public PlayerProfileResponse getPlayerProfile(UUID playerId, UUID gameId);
+	
+	public PlayerProfileResponse updatePlayerProfile(UUID playerId, UUID gameId, String profile) throws Exception;
 }
