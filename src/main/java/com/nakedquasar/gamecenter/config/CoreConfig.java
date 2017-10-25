@@ -17,8 +17,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 @Configuration
 @ComponentScan
@@ -35,14 +33,7 @@ public class CoreConfig {
 	@Value("${server.port}")
 	private int serverPort;
 
-	@Bean
-	public MultipartResolver multipartResolver() {
-		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-		multipartResolver.setMaxUploadSize(100000000);
-		return multipartResolver;
-	}
-
-	@Bean
+		@Bean
 	public EmbeddedServletContainerCustomizer containerCustomizer() throws FileNotFoundException {
 		final String absoluteKeystoreFile = ResourceUtils.getFile(keystoreFile).getAbsolutePath();
 

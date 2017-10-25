@@ -47,7 +47,6 @@ import com.nakedquasar.gamecenter.rest.controller.errors.ErrorInfo;
 import com.nakedquasar.gamecenter.security.Security;
 
 @Controller
-//@CrossOrigin(origins = {"https://localhost:", "http://localhost:8080", "http://localhost:8080"})
 @RequestMapping("/api")
 public class LeaderboardController {
 	@Autowired

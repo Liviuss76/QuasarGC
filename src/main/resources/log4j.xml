@@ -12,16 +12,19 @@
 	
 	<!-- Application Loggers -->
 	<logger name="com.nakedquasar.gamecenter">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 	
+	<logger name="org.thymeleaf">
+		<level value="info" />
+	</logger>
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="info" />
 	</logger>
 	
 	<logger name="org.springframework.beans">
-		<level value="info" />
+		<level value="error" />
 	</logger>
 	
 	<logger name="org.springframework.context">
