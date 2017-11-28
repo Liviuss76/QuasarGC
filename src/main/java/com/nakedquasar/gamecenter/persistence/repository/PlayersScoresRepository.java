@@ -40,4 +40,17 @@ public interface PlayersScoresRepository extends JpaRepository<PlayerScore, Play
 					"where ps.playerid= CAST(:playerId as uuid)", 
 			nativeQuery=true)
 	public int getPlayerRank(@Param("leaderboardId") String leaderboardId, @Param("playerId") String playerId);
+	
+	@Query(
+			value="SELECT ps.rank from (SELECT playerscore.playerid, playerscore.leaderboardid, playerscore.score, "+
+					"row_number() OVER (ORDER BY playerscore.calculatedrank DESC) AS rank, "+ 
+					"player.playerplatform AS platform "+
+					"FROM playerscore, player "+
+					"WHERE playerscore.playerid = player.playerid "+ 
+					"AND player.playerenabled = true "+
+					"AND leaderboardid=CAST(:leaderboardId as uuid) "+
+					"ORDER BY playerscore.calculatedrank DESC) as ps "+
+					"where ps.playerid= CAST(:playerId as uuid)", 
+			nativeQuery=true)
+	public int getCalculatedPlayerRank(@Param("leaderboardId") String leaderboardId, @Param("playerId") String playerId);
 }

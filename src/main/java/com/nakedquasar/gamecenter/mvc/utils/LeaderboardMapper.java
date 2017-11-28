@@ -20,6 +20,8 @@ public class LeaderboardMapper {
 		dto.setLeaderboardScoreIncrement(leaderboard.isLeaderboardScoreIncrement());
 		dto.setLeaderboardCreationDate(leaderboard.getLeaderboardCreationDate());
 		dto.setScoresCount(leaderboard.getScoresCount());
+		dto.setLeaderboardRankingType(leaderboard.getLeaderboardRankingType());
+		dto.setMinEntryForRanking(leaderboard.getMinEntryForRanking());
 		return dto;
 	}
 	

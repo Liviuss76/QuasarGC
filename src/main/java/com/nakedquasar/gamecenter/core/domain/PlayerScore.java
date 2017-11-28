@@ -12,6 +12,12 @@ public class PlayerScore extends BaseEntity<PlayerScoreKey> {
 
 	@Column(name = "score")
 	private int score;
+	
+	@Column(name = "gamesplayed")
+	private int gamesplayed;
+	
+	@Column(name = "calculatedrank")
+	private int calculatedrank;
 
 	@Transient
 	private int rank;
@@ -35,5 +41,21 @@ public class PlayerScore extends BaseEntity<PlayerScoreKey> {
 
 	public void setRank(int rank) {
 		this.rank = rank;
+	}
+
+	public int getGamesplayed() {
+		return gamesplayed;
+	}
+
+	public void setGamesplayed(int gamesplayed) {
+		this.gamesplayed = gamesplayed;
+	}
+
+	public int getCalculatedrank() {
+		return calculatedrank;
+	}
+
+	public void setCalculatedrank(int calculatedrank) {
+		this.calculatedrank = calculatedrank;
 	}
 }

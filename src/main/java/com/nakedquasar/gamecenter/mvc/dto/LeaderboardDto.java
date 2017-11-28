@@ -28,6 +28,8 @@ public class LeaderboardDto implements Serializable {
 	private Date leaderboardCreationDate;
 	private int scoresCount;
 	private MultipartFile leaderBoardImageRaw;
+	private int leaderboardRankingType;
+	private int minEntryForRanking;
 
 	public UUID getLeaderboardId() {
 		return leaderboardId;
@@ -107,5 +109,21 @@ public class LeaderboardDto implements Serializable {
 
 	public void setLeaderBoardImageRaw(MultipartFile leaderBoardImageRaw) {
 		this.leaderBoardImageRaw = leaderBoardImageRaw;
+	}
+
+	public int getLeaderboardRankingType() {
+		return leaderboardRankingType;
+	}
+
+	public void setLeaderboardRankingType(int leaderboardRankingType) {
+		this.leaderboardRankingType = leaderboardRankingType;
+	}
+
+	public int getMinEntryForRanking() {
+		return minEntryForRanking;
+	}
+
+	public void setMinEntryForRanking(int minEntryForRanking) {
+		this.minEntryForRanking = minEntryForRanking;
 	}
 }

@@ -49,6 +49,12 @@ public class LeaderBoard {
 	
 	@Column(name = "leaderboardcreationdate", nullable = false)
 	private Date leaderboardCreationDate;
+	
+	@Column(name = "leaderboardrankingtype", nullable = false)
+	private int leaderboardRankingType;
+	
+	@Column(name = "minentryforranking", nullable = false)
+	private int minEntryForRanking;
 
 	@Transient
 	private int scoresCount;
@@ -123,5 +129,21 @@ public class LeaderBoard {
 
 	public void setLeaderboardCreationDate(Date leaderboardCreationDate) {
 		this.leaderboardCreationDate = leaderboardCreationDate;
+	}
+
+	public int getLeaderboardRankingType() {
+		return leaderboardRankingType;
+	}
+
+	public void setLeaderboardRankingType(int leaderboardRankingType) {
+		this.leaderboardRankingType = leaderboardRankingType;
+	}
+
+	public int getMinEntryForRanking() {
+		return minEntryForRanking;
+	}
+
+	public void setMinEntryForRanking(int minEntryForRanking) {
+		this.minEntryForRanking = minEntryForRanking;
 	}
 }
