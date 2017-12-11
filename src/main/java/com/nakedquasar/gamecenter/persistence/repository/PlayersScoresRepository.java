@@ -19,6 +19,9 @@ public interface PlayersScoresRepository extends JpaRepository<PlayerScore, Play
 	@Query("SELECT ps FROM PlayerScore ps WHERE ps.id.leaderboard.leaderboardId =:leaderboardId ORDER BY ps.score DESC)")
 	public List<PlayerScore> findByLeaderboardId(@Param("leaderboardId") UUID leaderboardId,  Pageable pageable);
 	
+	@Query("SELECT ps FROM PlayerScore ps WHERE ps.id.leaderboard.leaderboardId =:leaderboardId ORDER BY ps.calculatedrank DESC)")
+	public List<PlayerScore> findByLeaderboardIdWithCalcRanking(@Param("leaderboardId") UUID leaderboardId,  Pageable pageable);
+	
 	@Query("SELECT COUNT(ps.id.leaderboard.leaderboardId) FROM PlayerScore ps WHERE ps.id.leaderboard.leaderboardId =:leaderboardId)")
 	public int getCountScoresForLeaderboardId(@Param("leaderboardId") UUID leaderboardId);
 	

@@ -49,38 +49,57 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
 	@Transactional
 	public AllScoresResponse getAllScores(UUID leaderboardId, int page, int size) {
+		LeaderBoard lbd = leaderboardRepository.findByLeaderboardId(leaderboardId);
 		Pageable topTen = new PageRequest(page, size);
 
 		AllScoresResponse apsr = new AllScoresResponse();
 
 		int scoresCount = getScoresCount(leaderboardId);
-
+		List<PlayerScoreResponse> playerScoreResponses = new ArrayList<PlayerScoreResponse>();
+		List<PlayerScore> playerScores;
+		int i = 1;
+		
 		if (scoresCount > 0) {
-			List<PlayerScoreResponse> playerScoreResponses = new ArrayList<PlayerScoreResponse>();
-			List<PlayerScore> playerScores = scoresRepository.findByLeaderboardId(leaderboardId, topTen);
+			if (lbd.getLeaderboardRankingType() == 0) {
+				playerScores = scoresRepository.findByLeaderboardId(leaderboardId, topTen);
 
-			int i = 1;
-			int j = 0;
-			for (PlayerScore playerScore : playerScores) {
-				PlayerScoreResponse playerScoreResponse = new PlayerScoreResponse();
-				playerScoreResponse.setPlayerDisplayName(playerScore.getId().getPlayer().getPlayerDisplayName());
-				playerScoreResponse.setPlatform(playerScore.getId().getPlayer().getPlayerPlatform());
-				playerScoreResponse.setPlayerScore(playerScore.getScore());
-				playerScoreResponse.setPlayerRank((page * size) + i);
-				playerScoreResponse.setScoresCount(scoresCount);
-				playerScoreResponse.setPlayerPicture(playerScore.getId().getPlayer().getPlayerPicture());
-				if (j == 0) {
+				for (PlayerScore playerScore : playerScores) {
+					PlayerScoreResponse playerScoreResponse = new PlayerScoreResponse();
+					playerScoreResponse.setPlayerDisplayName(playerScore.getId().getPlayer().getPlayerDisplayName());
+					playerScoreResponse.setPlatform(playerScore.getId().getPlayer().getPlayerPlatform());
+					playerScoreResponse.setPlayerScore(playerScore.getScore());
+					playerScoreResponse.setPlayerRank((page * size) + i);
+					playerScoreResponse.setScoresCount(scoresCount);
+					playerScoreResponse.setPlayerPicture(playerScore.getId().getPlayer().getPlayerPicture());
 					playerScoreResponse.setLeaderboardId(leaderboardId.toString());
-					j++;
-				} else {
-					playerScoreResponse.setLeaderboardId("");
+
+					playerScoreResponses.add(playerScoreResponse);
+					i++;
 				}
-				i++;
-				playerScoreResponses.add(playerScoreResponse);
+
+			} else if (lbd.getLeaderboardRankingType() == 1) {
+				playerScores = scoresRepository.findByLeaderboardIdWithCalcRanking(leaderboardId, topTen);
+
+				for (PlayerScore playerScore : playerScores) {
+					if (playerScore.getCalculatedrank() > 0) {
+						PlayerScoreResponse playerScoreResponse = new PlayerScoreResponse();
+						playerScoreResponse.setPlayerDisplayName(playerScore.getId().getPlayer().getPlayerDisplayName());
+						playerScoreResponse.setPlatform(playerScore.getId().getPlayer().getPlayerPlatform());
+						playerScoreResponse.setPlayerScore(playerScore.getScore());
+						playerScoreResponse.setPlayerRank((page * size) + i);
+						playerScoreResponse.setScoresCount(scoresCount);
+						playerScoreResponse.setPlayerPicture(playerScore.getId().getPlayer().getPlayerPicture());
+						playerScoreResponse.setLeaderboardId(leaderboardId.toString());
+
+						playerScoreResponses.add(playerScoreResponse);
+						i++;
+					}
+				}
 			}
 
-			apsr.setPlayerScores(playerScoreResponses);
 		}
+
+		apsr.setPlayerScores(playerScoreResponses);
 
 		return apsr;
 	}
@@ -104,20 +123,31 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 		}
 
 		int scoresCount = getScoresCount(leaderboardId);
+
 		PlayerScore playerScore = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
 		if (playerScore != null) {
 			int playerRank = 0;
 
 			if (lbd.getLeaderboardRankingType() == 0) {
 				playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
-			} else if (playerScore.getGamesplayed() >= lbd.getMinEntryForRanking()) {
-				playerRank = getCalculatedPlayerRank(leaderboardId, player.getPlayerId());
+			} else if (lbd.getLeaderboardRankingType() == 1) {
+				if (playerScore.getGamesplayed() >= lbd.getMinEntryForRanking()) {
+					playerRank = getCalculatedPlayerRank(leaderboardId, player.getPlayerId());
+				} else {
+					playerRank = playerScore.getGamesplayed() - lbd.getMinEntryForRanking();
+				}
 			}
 
 			return new PlayerScoreResponse(player.getPlayerDisplayName(), playerScore.getScore(), playerRank,
 					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(), leaderboardId.toString());
 		} else {
-			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform(),
+			int playerRank = 0;
+
+			if (lbd.getLeaderboardRankingType() == 1) {
+				playerRank = lbd.getMinEntryForRanking() * -1;
+			}
+
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, playerRank, player.getPlayerPlatform(),
 					scoresCount, player.getPlayerPicture(), leaderboardId.toString());
 		}
 	}
@@ -177,8 +207,8 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
 		// If player blocked, return existing score but rank to 0
 		if (!player.isPlayerEnabled()) {
-			return new PlayerScoreResponse(player.getPlayerDisplayName(), ps.getScore(), 0, ps.getId()
-					.getPlayer().getPlayerPlatform(), scoresCount, ps.getId().getPlayer().getPlayerPicture(),
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), ps.getScore(), 0, ps.getId().getPlayer()
+					.getPlayerPlatform(), scoresCount, ps.getId().getPlayer().getPlayerPicture(),
 					leaderboardId.toString());
 		}
 
