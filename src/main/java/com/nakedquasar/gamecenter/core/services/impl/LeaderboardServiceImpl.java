@@ -60,7 +60,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 			List<PlayerScore> playerScores = scoresRepository.findByLeaderboardId(leaderboardId, topTen);
 
 			int i = 1;
-			int j=0;
+			int j = 0;
 			for (PlayerScore playerScore : playerScores) {
 				PlayerScoreResponse playerScoreResponse = new PlayerScoreResponse();
 				playerScoreResponse.setPlayerDisplayName(playerScore.getId().getPlayer().getPlayerDisplayName());
@@ -69,10 +69,10 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 				playerScoreResponse.setPlayerRank((page * size) + i);
 				playerScoreResponse.setScoresCount(scoresCount);
 				playerScoreResponse.setPlayerPicture(playerScore.getId().getPlayer().getPlayerPicture());
-				if(j==0){
+				if (j == 0) {
 					playerScoreResponse.setLeaderboardId(leaderboardId.toString());
 					j++;
-				}else{
+				} else {
 					playerScoreResponse.setLeaderboardId("");
 				}
 				i++;
@@ -94,7 +94,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 	public PlayerScoreResponse getPlayerScore(UUID leaderboardId) throws Exception {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		LeaderBoard lbd = leaderboardRepository.findByLeaderboardId(leaderboardId);
-		
+
 		Player player;
 		if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
 			User userDetails = (User) auth.getPrincipal();
@@ -107,23 +107,23 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 		PlayerScore playerScore = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
 		if (playerScore != null) {
 			int playerRank = 0;
-			
-			if(lbd.getLeaderboardRankingType() == 0){
+
+			if (lbd.getLeaderboardRankingType() == 0) {
 				playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
-			}else if(playerScore.getGamesplayed() >= lbd.getMinEntryForRanking()){
+			} else if (playerScore.getGamesplayed() >= lbd.getMinEntryForRanking()) {
 				playerRank = getCalculatedPlayerRank(leaderboardId, player.getPlayerId());
 			}
-			
+
 			return new PlayerScoreResponse(player.getPlayerDisplayName(), playerScore.getScore(), playerRank,
-					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
+					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(), leaderboardId.toString());
 		} else {
-			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), 0, 0, player.getPlayerPlatform(),
+					scoresCount, player.getPlayerPicture(), leaderboardId.toString());
 		}
 	}
 
 	@Transactional
 	public PlayerScoreResponse submitPlayerScore(UUID leaderboardId, int playerScore, String ip) throws Exception {
-		PlayerScoreResponse psr;
 		Player player;
 		LeaderBoard lbd = leaderboardRepository.findByLeaderboardId(leaderboardId);
 		if (lbd == null) {
@@ -147,9 +147,11 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 		plog.setIp(ip);
 		playerLogRepository.saveAndFlush(plog);
 
-		int scoresCount = getScoresCount(leaderboardId)+1;
+		int scoresCount = getScoresCount(leaderboardId) + 1;
+
 		PlayerScore ps = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
 
+		// No Scores. Add new one and and send to player
 		if (ps == null) {
 			ps = new PlayerScore();
 			PlayerScoreKey psk = new PlayerScoreKey();
@@ -162,67 +164,71 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 			scoresRepository.saveAndFlush(ps);
 
 			PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
+
 			int playerRank = 0;
-			psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
 
+			if (lbd.getLeaderboardRankingType() == 1) {
+				playerRank = lbd.getMinEntryForRanking() * -1;
+			}
+
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
+					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(), leaderboardId.toString());
+		}
+
+		// If player blocked, return existing score but rank to 0
+		if (!player.isPlayerEnabled()) {
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), ps.getScore(), 0, ps.getId()
+					.getPlayer().getPlayerPlatform(), scoresCount, ps.getId().getPlayer().getPlayerPicture(),
+					leaderboardId.toString());
+		}
+
+		// Hack atempt? Do not increment score, just return existing value
+		if (playerScore < lbd.getLeaderboardMinSubmitValue() || playerScore > lbd.getLeaderboardMaxSubmitValue()) {
+			PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
+			return new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), 0,
+					player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(), leaderboardId.toString());
+
+		}
+
+		// Regular flow - Calculate and save
+		int gamesPlayed = ps.getGamesplayed() + 1;
+		int calculatedRank = 0;
+
+		if (ps.getId().getLeaderboard().isLeaderboardScoreIncrement()) {
+			// Get existing score and increment it with new score
+			ps.setScore(ps.getScore() + playerScore);
 		} else {
-			if (!ps.getId().getPlayer().isPlayerEnabled()) {
-				// If player blocked, return existing score but rank to 0
-				psr = new PlayerScoreResponse(ps.getId().getPlayer().getPlayerDisplayName(), ps.getScore(), 0, ps
-						.getId().getPlayer().getPlayerPlatform(), scoresCount, ps.getId().getPlayer().getPlayerPicture(),leaderboardId.toString());
-			} else {
-				if (playerScore < lbd.getLeaderboardMinSubmitValue()
-						|| playerScore > lbd.getLeaderboardMaxSubmitValue()) {
-					// Hack atempt? Do not increment score, just return existing
-					// value.
-					PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId,
-							player.getPlayerId());
-					int playerRank = 0;
-					psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-							player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
-
-				} else {
-					int gamesPlayed = ps.getGamesplayed()+1;
-					int calculatedRank = 0;
-					
-					if (ps.getId().getLeaderboard().isLeaderboardScoreIncrement()) {
-						// Get existing score and increment it with new score
-						ps.setScore(ps.getScore() + playerScore);
-					} else {
-						// Overwrite existing score only if newest score is
-						// greater
-						if (playerScore > ps.getScore()){
-							ps.setScore(playerScore);
-						}
-					}
-					
-					ps.setGamesplayed(gamesPlayed);
-					
-					if(lbd.getLeaderboardRankingType() == 1 && ps.getGamesplayed() >= lbd.getMinEntryForRanking()){
-						calculatedRank = ((ps.getScore() + playerScore)/gamesPlayed) * 10000;
-					}
-					
-					ps.setCalculatedrank(calculatedRank);
-					scoresRepository.saveAndFlush(ps);
-				}
-
-				PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
-				
-				int playerRank = 0;
-				
-				if(lbd.getLeaderboardRankingType() == 0){
-					playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
-				}else if(playerScoreNew.getGamesplayed() >= lbd.getMinEntryForRanking()){
-					playerRank = getCalculatedPlayerRank(leaderboardId, player.getPlayerId());
-				}
-				
-				psr = new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
-						player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(),leaderboardId.toString());
+			// Overwrite existing score only if newest score is
+			// greater
+			if (playerScore > ps.getScore()) {
+				ps.setScore(playerScore);
 			}
 		}
 
-		return psr;
+		ps.setGamesplayed(gamesPlayed);
+
+		if (lbd.getLeaderboardRankingType() == 1 && ps.getGamesplayed() >= lbd.getMinEntryForRanking()) {
+			calculatedRank = ((ps.getScore() + playerScore) / gamesPlayed) * 10000;
+		}
+
+		ps.setCalculatedrank(calculatedRank);
+		scoresRepository.saveAndFlush(ps);
+
+		// Fetch the score and build response to user
+		PlayerScore playerScoreNew = scoresRepository.findByPlayerScoreKey(leaderboardId, player.getPlayerId());
+
+		int playerRank = 0;
+
+		if (lbd.getLeaderboardRankingType() == 0) {
+			playerRank = getPlayerRank(leaderboardId, player.getPlayerId());
+		} else if (playerScoreNew.getGamesplayed() >= lbd.getMinEntryForRanking()) {
+			playerRank = getCalculatedPlayerRank(leaderboardId, player.getPlayerId());
+		} else {
+			playerRank = playerScoreNew.getGamesplayed() - lbd.getMinEntryForRanking();
+		}
+
+		return new PlayerScoreResponse(player.getPlayerDisplayName(), playerScoreNew.getScore(), playerRank,
+				player.getPlayerPlatform(), scoresCount, player.getPlayerPicture(), leaderboardId.toString());
 	}
 
 	@Override
@@ -260,7 +266,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 		newLeaderboard.setLeaderboardCreationDate(new Date(new java.util.Date().getTime()));
 		newLeaderboard.setLeaderboardRankingType(leaderboardDto.getLeaderboardRankingType());
 		newLeaderboard.setMinEntryForRanking(leaderboardDto.getMinEntryForRanking());
-		
+
 		return leaderboardRepository.saveAndFlush(newLeaderboard);
 	}
 
@@ -302,7 +308,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 	public int getPlayerRank(UUID leaderboardId, UUID playerId) {
 		return scoresRepository.getPlayerRank(leaderboardId.toString(), playerId.toString());
 	}
-	
+
 	public int getCalculatedPlayerRank(UUID leaderboardId, UUID playerId) {
 		return scoresRepository.getCalculatedPlayerRank(leaderboardId.toString(), playerId.toString());
 	}
